@@ -19,7 +19,7 @@ ChartJS.register(
   Legend
 );
 
-// 颜色主题 - 使用更柔和、易于区分的颜色
+
 const chartColors = {
   resnet: {
     background: 'rgba(255, 159, 64, 0.2)', // 橙色
@@ -126,23 +126,23 @@ const RadarChart = () => {
             size: 12,
           },
           color: 'rgba(0, 0, 0, 0.8)',
-          stepSize: 0.1, // 设置刻度间隔
+          stepSize: 0.1, 
         },
         suggestedMin: 0,
-        suggestedMax: 0.25, // 调整最大值以更好地适应数据范围
+        suggestedMax: 0.25, 
       },
     },
     plugins: {
       legend: {
         display: true,
-        position: 'top', // 将图例移动到顶部
-        align: 'end', // 右对齐图例
+        position: 'top', 
+        align: 'end', 
         labels: {
           font: {
             size: 14,
           },
           color: 'rgba(0, 0, 0, 0.8)',
-          boxWidth: 12, // 调整图例框大小
+          boxWidth: 12, 
           padding: 20,
         },
       },
@@ -157,13 +157,13 @@ const RadarChart = () => {
         },
         callbacks: {
           label: function (context) {
-            return `${context.dataset.label}: ${context.formattedValue}`; // 显示标签和数值
+            return `${context.dataset.label}: ${context.formattedValue}`; 
           }
         }
       },
     },
     interaction: {
-      mode: 'nearest', // 设置交互模式为最近的点
+      mode: 'nearest', 
       intersect: false,
     },
   };
