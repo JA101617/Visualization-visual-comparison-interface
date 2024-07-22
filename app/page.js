@@ -15,8 +15,8 @@ export default function Home() {
       <div style={{
         position: 'absolute',
         top: '2vh',
-        left: '2vh',
-        width: '30vh',
+        left: '1vw',
+        width: '18vw',
         height: '95vh',
         backgroundColor: 'white',
         borderRadius: '3vh',
@@ -38,10 +38,10 @@ export default function Home() {
       >
         <Heatmap />
       </div>
-      <div className="absolute bottom-[0px] right-[10vh]">
+      <div className="absolute bottom-[14vh] right-[5vw]" style={{height:'40vh'}}>
         <RadarChart data={data} />
       </div>
-      <div className="absolute top-[3vh] right-[10vh] scale-y-70">
+      <div className="absolute top-[3vh] right-[1vw] scale-y-70">
       
         <BarChart data={data} />
       </div>
