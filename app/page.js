@@ -14,7 +14,7 @@ export default function Home() {
       </Head>
       <div className="absolute inset-y-0 left-[100px] items-start h-screen">
         <h1>
-          <title>Heatmap Visualization</title>
+          <title>AI Training Data Visualization</title>
         </h1>
         <main style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', height: '100vh' }}>
           <Heatmap />
@@ -23,7 +23,7 @@ export default function Home() {
       <div className="absolute bottom-[10px] right-[200px]">
         <RadarChart data={data} />
       </div>
-      <div className="absolute top-[30px] right-[100px]">
+      <div className="absolute top-[20px] right-[100px] scale-y-70">
       
         <BarChart data={data} />
       </div>

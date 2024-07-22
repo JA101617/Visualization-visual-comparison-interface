@@ -89,8 +89,7 @@ const Heatmap = () => {
   return (
     <div className="flex justify-start p-5">
     <div className="w-full max-w-2xl mx-auto">
-
-      <FormControl fullWidth>
+      <FormControl style={{ marginLeft: '10px' }}>
         <InputLabel id="demo-simple-select-label">Select X Axis</InputLabel>
         <Select
           labelId="demo-simple-select-label"
@@ -106,9 +105,7 @@ const Heatmap = () => {
           ))}
         </Select>
       </FormControl>
-      <br></br>
-      <br></br>
-      <FormControl fullWidth>
+      <FormControl  style={{ marginLeft: '10px' }}>
         <InputLabel id="demo-simple-select-label">Select Y Axis</InputLabel>
         <Select
           labelId="demo-simple-select-label"
@@ -124,7 +121,6 @@ const Heatmap = () => {
           ))}
         </Select>
       </FormControl>
-
 
       <table className="w-full border-collapse">
         <thead>

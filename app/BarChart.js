@@ -2,6 +2,11 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import * as d3 from 'd3';
+import Box from '@mui/material/Box';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 const BarChart = ({ data }) => {
   const [chartData, setChartData] = useState(data.ValDataSpan);
@@ -125,19 +130,37 @@ const BarChart = ({ data }) => {
 
   return (
     <div ref={containerRef} style={{ width: '100%', height: '45vh' }}>
-      <div style={{ marginBottom: '10px' }}>
-        <select onChange={handleDataTypeChange} value={dataType}>
-          <option value="ValDataSpan">ValDataSpan</option>
-          <option value="TestDataSpan">TestDataSpan</option>
-          <option value="TrainDataSpan">TrainDataSpan</option>
-        </select>
-        <select onChange={handleColorByChange} value={colorBy} style={{ marginLeft: '10px' }}>
-          <option value="BarChartType">BarChartType</option>
-          <option value="DownsamplingLevel">DownsamplingLevel</option>
-          <option value="SamplingMethod">SamplingMethod</option>
-          <option value="SamplingTarget">SamplingTarget</option>
-          <option value="ModelName">ModelName</option>
-        </select>
+      <div className='bottom-[10px] '>
+        <FormControl >
+          <InputLabel id="data-type-select-label">Select Data Type</InputLabel>
+          <Select
+            labelId="data-type-select-label"
+            id="data-type-select"
+            value={dataType}
+            label="Select Data Type"
+            onChange={handleDataTypeChange}
+          >
+            <MenuItem value="ValDataSpan">ValDataSpan</MenuItem>
+            <MenuItem value="TestDataSpan">TestDataSpan</MenuItem>
+            <MenuItem value="TrainDataSpan">TrainDataSpan</MenuItem>
+          </Select>
+        </FormControl>
+        <FormControl  style={{ marginLeft: '10px' }}>
+          <InputLabel id="color-by-select-label">Color By</InputLabel>
+          <Select
+            labelId="color-by-select-label"
+            id="color-by-select"
+            value={colorBy}
+            label="Color By"
+            onChange={handleColorByChange}
+          >
+            <MenuItem value="BarChartType">BarChartType</MenuItem>
+            <MenuItem value="DownsamplingLevel">DownsamplingLevel</MenuItem>
+            <MenuItem value="SamplingMethod">SamplingMethod</MenuItem>
+            <MenuItem value="SamplingTarget">SamplingTarget</MenuItem>
+            <MenuItem value="ModelName">ModelName</MenuItem>
+          </Select>
+        </FormControl>
       </div>
       <svg ref={svgRef}></svg>
     </div>
