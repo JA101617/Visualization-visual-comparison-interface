@@ -34,12 +34,12 @@ const BarChart = ({ data }) => {
   }, []);
 
   const drawChart = () => {
-    const containerWidth = containerRef.current.clientWidth;
-    const containerHeight = window.innerHeight * 0.8;
+    //const containerWidth = containerRef.current.clientWidth;
+    //const containerHeight = window.innerHeight * 0.8;
 
-    const margin = { top: 20, right: 100, bottom: 60, left: 60 };
-    const width = containerWidth - margin.left - margin.right;
-    const height = containerHeight - margin.top - margin.bottom;
+    const margin = { top: 20, right: 100, bottom: 10, left: 60 };
+    const width = 300;//containerWidth - margin.left - margin.right;
+    const height = 250;//containerHeight - margin.top - margin.bottom;
 
     d3.select(svgRef.current).selectAll("*").remove();
 
@@ -124,7 +124,7 @@ const BarChart = ({ data }) => {
   };
 
   return (
-    <div ref={containerRef} style={{ width: '100%', height: '80vh' }}>
+    <div ref={containerRef} style={{ width: '100%', height: '45vh' }}>
       <div style={{ marginBottom: '10px' }}>
         <select onChange={handleDataTypeChange} value={dataType}>
           <option value="ValDataSpan">ValDataSpan</option>
