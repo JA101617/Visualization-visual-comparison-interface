@@ -150,8 +150,8 @@ const Heatmap = ({xOption: propsXOption, yOption: propsYOption, onHeatmapSelect,
           label="Select X Axis"
           onChange={(opt_click) => handleXOptionChange(opt_click.target.value)}
         >
-          {Object.keys(options).map((key) => (
-            <MenuItem key={key} value={key}>
+          {Object.keys(options).filter(key => key !== stateYOption).map((key) => (
+            <MenuItem key={key} value={key} >
               {key}
             </MenuItem>
           ))}
@@ -166,7 +166,7 @@ const Heatmap = ({xOption: propsXOption, yOption: propsYOption, onHeatmapSelect,
           label="Select Y Axis"
           onChange={(opt_click) => handleYOptionChange(opt_click.target.value)}
         >
-          {Object.keys(options).map((key) => (
+          {Object.keys(options).filter(key => key !== stateXOption).map((key) => (
             <MenuItem key={key} value={key}>
               {key}
             </MenuItem>
