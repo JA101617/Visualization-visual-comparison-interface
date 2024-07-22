@@ -200,7 +200,10 @@ const RadarChart = ({onRadarButtonClick, onHeatmapSelect}) => {
           采样方法
         </Button>
         <Button variant="outlined"
-          onClick={() => {handleChangeLabelType('BarChartType');onRadarButtonClick('ModelName', 'BarChartType'); }}
+          onClick={() => {
+            handleChangeLabelType('BarChartType');
+            onRadarButtonClick('ModelName', 'BarChartType'); 
+          }}
           style={{marginRight:'10px'}}
           sx={{ 
             borderColor: 'rgb(164,168,169)',

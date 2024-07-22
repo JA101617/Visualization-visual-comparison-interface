@@ -48,7 +48,7 @@ const parseCSV = (text) => {
   return data;
 };
 
-const Heatmap = ({xOption: propsXOption, yOption: propsYOption, onHeatmapSelect}) => {
+const Heatmap = ({xOption: propsXOption, yOption: propsYOption, onHeatmapSelect, xUpdater}) => {
   
   const [data, setData] = useState([]);
   const [stateXOption, setXOption] = useState(propsXOption);
@@ -60,11 +60,16 @@ const Heatmap = ({xOption: propsXOption, yOption: propsYOption, onHeatmapSelect}
     });
   }, []);
   useEffect(() => {
-    setXOption(propsXOption)
+      console.log('set x: x propx',{stateXOption,propsXOption});
+      setXOption(propsXOption);
+      console.log('After set x: x propx',{stateXOption,propsXOption});
   }, [propsXOption]);
 
   useEffect(() => {
-    setYOption(propsYOption)
+      console.log('set y: y propy',{stateYOption,propsYOption});
+      setYOption(propsYOption);
+      console.log('After set y: y propy',{stateYOption,propsYOption});
+    //setYOption(propsYOption)
   }, [propsYOption]);
 
 
@@ -72,6 +77,9 @@ const Heatmap = ({xOption: propsXOption, yOption: propsYOption, onHeatmapSelect}
 /* 注意避免无限setState，只在点击时进行判定 (所以useEffect也就不需要了)*/
   const handleXOptionChange = (newXOption) => {
     console.log('onHandleXOptionChange');
+    if (propsXOption != newXOption) {
+      xUpdater(newXOption);
+    }
     setXOption(newXOption);
     if (newXOption === 'ModelName' && (stateYOption === 'SamplingMethod' || stateYOption === 'BarChartType')) {
       console.log('change radar from heatmap newX Y ohs',newXOption,stateYOption,onHeatmapSelect);

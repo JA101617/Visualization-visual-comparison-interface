@@ -16,8 +16,11 @@ export default function Home() {
 
   const handleRadarButtonClick = (newXAxis,newYAxis) => {
     console.log('handleRadarButtonClick', { newXAxis, newYAxis });
-    if(HeatmapXAxis!=newXAxis) setHeatmapXAxis(newXAxis);
-    if(HeatmapYAxis!=newYAxis) setHeatmapYAxis(newYAxis);
+    //if(HeatmapXAxis!=newXAxis) 
+      setHeatmapXAxis(newXAxis);
+    //if(HeatmapYAxis!=newYAxis) 
+      setHeatmapYAxis(newYAxis);
+    //console.log('After handle X Y', { HeatmapXAxis, HeatmapYAxis });
   }
 
   const [stateHeatmapSelected,setHeatmapSelect] = useState(null);
@@ -65,6 +68,7 @@ export default function Home() {
           onHeatmapSelect={handleHeatmapSelect ? handleHeatmapSelect : ()=>{
             console.log("dummy onHeatmapSelect 1");
           }}
+          xUpdater={setHeatmapXAxis}
         />
       </div>
       <div className="absolute bottom-[23vh] right-[5vw] scale-70" style={{height:'30vh'}}>
