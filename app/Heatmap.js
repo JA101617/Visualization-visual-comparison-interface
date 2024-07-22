@@ -48,52 +48,62 @@ const parseCSV = (text) => {
   return data;
 };
 
-const Heatmap = ({xOption: propsXOption,yOption: propsYOption, onHeatmapSelect}) => {
+const Heatmap = ({xOption: propsXOption, yOption: propsYOption, onHeatmapSelect}) => {
   
   const [data, setData] = useState([]);
-  const [xOption, setXOption] = useState(propsXOption);
-  const [yOption, setYOption] = useState(propsYOption);
+  const [stateXOption, setXOption] = useState(propsXOption);
+  const [stateYOption, setYOption] = useState(propsYOption);
 
   useEffect(() => {
     fetchData().then((parsedData) => {
       setData(parsedData);
     });
   }, []);
+  useEffect(() => {
+    setXOption(propsXOption)
+  }, [propsXOption]);
+
+  useEffect(() => {
+    setYOption(propsYOption)
+  }, [propsYOption]);
+
 
 /* 从雷达到色块 */
 /* 注意避免无限setState，只在点击时进行判定 (所以useEffect也就不需要了)*/
   const handleXOptionChange = (newXOption) => {
+    console.log('onHandleXOptionChange');
     setXOption(newXOption);
-    if (newXOption === 'ModelName' && (yOption === 'SamplingMethod' || yOption === 'BarChartType')) {
-      console.log('change radar from heatmap newX Y ohs',newXOption,yOption,onHeatmapSelect);
-      onHeatmapSelect && onHeatmapSelect({ type: yOption });
-    } else if (yOption === 'ModelName' && (newXOption === 'SamplingMethod' || newXOption === 'BarChartType')) {
-      console.log('change radar from heatmap newX Y',newXOption,yOption);
+    if (newXOption === 'ModelName' && (stateYOption === 'SamplingMethod' || stateYOption === 'BarChartType')) {
+      console.log('change radar from heatmap newX Y ohs',newXOption,stateYOption,onHeatmapSelect);
+      onHeatmapSelect && onHeatmapSelect({ type: stateYOption });
+    } else if (stateYOption === 'ModelName' && (newXOption === 'SamplingMethod' || newXOption === 'BarChartType')) {
+      console.log('change radar from heatmap newX Y',newXOption,stateYOption);
       onHeatmapSelect && onHeatmapSelect({ type: newXOption });
     }
   };
   const handleYOptionChange = (newYOption) => {
+    console.log('onHandleYOptionChange')
     setYOption(newYOption);
-    if (xOption === 'ModelName' && (newYOption === 'SamplingMethod' || newYOption === 'BarChartType')) {
-      console.log('change radar from heatmap X newY',xOption,newYOption);
+    if (stateXOption === 'ModelName' && (newYOption === 'SamplingMethod' || newYOption === 'BarChartType')) {
+      console.log('change radar from heatmap X newY',stateXOption,newYOption);
       onHeatmapSelect && onHeatmapSelect({ type: newYOption });
-    } else if (newYOption === 'ModelName' && (xOption === 'SamplingMethod' || xOption === 'BarChartType')) {
-      console.log('change radar from heatmap X newY',xOption,newYOption);
-      onHeatmapSelect && onHeatmapSelect({ type: xOption });
+    } else if (newYOption === 'ModelName' && (stateXOption === 'SamplingMethod' || stateXOption === 'BarChartType')) {
+      console.log('change radar from heatmap X newY',stateXOption,newYOption);
+      onHeatmapSelect && onHeatmapSelect({ type: stateXOption });
     }
   };
 
 
   const filteredData = React.useMemo(() => {
     if (!data.length) return [];
-    const rows = options[yOption].length;
-    const cols = options[xOption].length;
+    const rows = options[stateYOption].length;
+    const cols = options[stateXOption].length;
     const newData = Array(rows).fill(null).map(() => Array(cols).fill(null));
 
     let minValue = Infinity;
     let maxValue = -Infinity;
     data.forEach((row) => {
-      if (row.xVariable === xOption && row.yVariable === yOption) {
+      if (row.xVariable === stateXOption && row.yVariable === stateYOption) {
         const value = parseFloat(row['Average Error']);
         if (value < minValue) minValue = value;
         if (value > maxValue) maxValue = value;
@@ -101,12 +111,12 @@ const Heatmap = ({xOption: propsXOption,yOption: propsYOption, onHeatmapSelect})
     });
 
     data.forEach((row) => {
-      if (row.xVariable === xOption && row.yVariable === yOption) {
+      if (row.xVariable === stateXOption && row.yVariable === stateYOption) {
         const xValue = parseInt(row.xValue) || row.xValue;
         const yValue = parseInt(row.yValue) || row.yValue;
         const value = parseFloat(row['Average Error']);
-        const xIndex = options[xOption].indexOf(xValue);
-        const yIndex = options[yOption].indexOf(yValue);
+        const xIndex = options[stateXOption].indexOf(xValue);
+        const yIndex = options[stateYOption].indexOf(yValue);
         if (xIndex >= 0 && yIndex >= 0) {
           newData[yIndex][xIndex] = { value, color: getColor(value, minValue, maxValue) };
         }
@@ -114,10 +124,10 @@ const Heatmap = ({xOption: propsXOption,yOption: propsYOption, onHeatmapSelect})
     });
 
     return newData;
-  }, [data, xOption, yOption]);
+  }, [data, stateXOption, stateYOption]);
 
-  const rows = options[yOption].length;
-  const cols = options[xOption].length;
+  const rows = options[stateYOption].length;
+  const cols = options[stateXOption].length;
   //const blockSize = Math.min(600 / cols, 600 / rows); // 600是容器的最大宽度和高度
 
   return ( 
@@ -128,7 +138,7 @@ const Heatmap = ({xOption: propsXOption,yOption: propsYOption, onHeatmapSelect})
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
-          value={xOption}
+          value={stateXOption}
           label="Select X Axis"
           onChange={(opt_click) => handleXOptionChange(opt_click.target.value)}
         >
@@ -144,7 +154,7 @@ const Heatmap = ({xOption: propsXOption,yOption: propsYOption, onHeatmapSelect})
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
-          value={yOption}
+          value={stateYOption}
           label="Select Y Axis"
           onChange={(opt_click) => handleYOptionChange(opt_click.target.value)}
         >
@@ -160,7 +170,7 @@ const Heatmap = ({xOption: propsXOption,yOption: propsYOption, onHeatmapSelect})
         <thead>
           <tr>
             <th></th>
-            {options[xOption].map((label, index) => (
+            {options[stateXOption].map((label, index) => (
               <th key={index} className="text-center font-bold">
                 {label}
               </th>
@@ -170,7 +180,7 @@ const Heatmap = ({xOption: propsXOption,yOption: propsYOption, onHeatmapSelect})
         <tbody>
           {filteredData.map((row, i) => (
             <tr key={i}>
-              <td className="text-right pr-3 font-bold">{options[yOption][i]}</td>
+              <td className="text-right pr-3 font-bold">{options[stateYOption][i]}</td>
               {row.map((cell, j) => (
                 <td
                   key={j}
