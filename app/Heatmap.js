@@ -153,8 +153,8 @@ const Heatmap = () => {
                   key={j}
                   className="text-center text-white"
                   style={{
-                    width: `${500 / cols}px`,
-                    height: `${500 / rows}px`,
+                    width: `${60 / cols}vh`,
+                    height: `${60 / rows}vh`,
                     backgroundColor: cell !== null ? cell.color : 'gray',
                   }}
                 >

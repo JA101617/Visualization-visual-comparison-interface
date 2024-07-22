@@ -14,21 +14,21 @@ export default function Home() {
       </h1>
       <div style={{
         position: 'absolute',
-        top: '20px',
-        left: '20px',
-        width: '280px',
-        height: '800px',
+        top: '2vh',
+        left: '2vh',
+        width: '30vh',
+        height: '95vh',
         backgroundColor: 'white',
-        borderRadius: '15px',
-        padding: '20px',
-        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
+        borderRadius: '3vh',
+        padding: '3vh',
+        boxShadow: '0 2vh 4vh rgba(0, 0, 0, 0.1)'
       }}>
         <h2>Our Group</h2>
         <p>Introduction about the group.</p>
         <h2>Dataset</h2>
         <p>Information about the dataset.</p>
       </div>
-      <div className="absolute inset-y-0 left-[300px]" 
+      <div className="absolute inset-y-0 left-[33vh]" 
         style={{ 
           display: 'flex', 
           justifyContent: 'flex-start', 
@@ -38,10 +38,10 @@ export default function Home() {
       >
         <Heatmap />
       </div>
-      <div className="absolute bottom-[20px] right-[170px]">
+      <div className="absolute bottom-[0px] right-[10vh]">
         <RadarChart data={data} />
       </div>
-      <div className="absolute top-[50px] right-[200px] scale-y-70">
+      <div className="absolute top-[3vh] right-[10vh] scale-y-70">
       
         <BarChart data={data} />
       </div>

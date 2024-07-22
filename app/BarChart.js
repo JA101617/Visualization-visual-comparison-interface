@@ -163,7 +163,6 @@ const BarChart = ({ data }) => {
         </FormControl>
       </div>
       <br></br>
-      <br></br>
       <svg ref={svgRef}></svg>
     </div>
   );
