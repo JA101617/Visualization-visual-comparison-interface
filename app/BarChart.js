@@ -42,7 +42,7 @@ const BarChart = ({ data }) => {
     //const containerWidth = containerRef.current.clientWidth;
     //const containerHeight = window.innerHeight * 0.8;
 
-    const margin = { top: 20, right: 100, bottom: 10, left: 60 };
+    const margin = { top: 0, right: 0, bottom: 10, left: 60 };
     const width = 300;//containerWidth - margin.left - margin.right;
     const height = 250;//containerHeight - margin.top - margin.bottom;
 
@@ -162,6 +162,8 @@ const BarChart = ({ data }) => {
           </Select>
         </FormControl>
       </div>
+      <br></br>
+      <br></br>
       <svg ref={svgRef}></svg>
     </div>
   );

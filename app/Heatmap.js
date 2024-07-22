@@ -98,9 +98,9 @@ const Heatmap = () => {
   //const blockSize = Math.min(600 / cols, 600 / rows); // 600是容器的最大宽度和高度
 
   return (
-    <div className="flex justify-start p-5">
-    <div className="w-full max-w-2xl mx-auto">
-      <FormControl style={{ marginLeft: '10px' }}>
+    <div className="flex justify-start p-5" style={{ height: 'auto' }}>
+    <div className="w-full max-w-2xl mx-auto" style={{ height: 'auto' }}>
+      <FormControl style={{ marginLeft: '180px' }}>
         <InputLabel id="demo-simple-select-label">Select X Axis</InputLabel>
         <Select
           labelId="demo-simple-select-label"
@@ -153,8 +153,8 @@ const Heatmap = () => {
                   key={j}
                   className="text-center text-white"
                   style={{
-                    width: `${400 / cols}px`,
-                    height: `${400 / rows}px`,
+                    width: `${500 / cols}px`,
+                    height: `${500 / rows}px`,
                     backgroundColor: cell !== null ? cell.color : 'gray',
                   }}
                 >

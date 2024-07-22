@@ -9,21 +9,39 @@ import RadarChart from "./RadarChart.js"
 export default function Home() {
   return (
     <div>
-      <Head>
-        <title>Data Visualization</title>
-      </Head>
-      <div className="absolute inset-y-0 left-[300px] items-start h-screen">
-        <h1>
-          <title>AI Training Data Visualization</title>
-        </h1>
-        <main style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', height: '100vh' }}>
-          <Heatmap />
-        </main>
+      <h1>
+        <title>AI Training Data Visualization</title>
+      </h1>
+      <div style={{
+        position: 'absolute',
+        top: '20px',
+        left: '20px',
+        width: '280px',
+        height: '800px',
+        backgroundColor: 'white',
+        borderRadius: '15px',
+        padding: '20px',
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
+      }}>
+        <h2>Our Group</h2>
+        <p>Introduction about the group.</p>
+        <h2>Dataset</h2>
+        <p>Information about the dataset.</p>
       </div>
-      <div className="absolute bottom-[20px] right-[250px]">
+      <div className="absolute inset-y-0 left-[300px]" 
+        style={{ 
+          display: 'flex', 
+          justifyContent: 'flex-start', 
+          alignItems: 'center', 
+          height: 'auto' 
+        }}
+      >
+        <Heatmap />
+      </div>
+      <div className="absolute bottom-[20px] right-[170px]">
         <RadarChart data={data} />
       </div>
-      <div className="absolute top-[30px] right-[150px] scale-y-70">
+      <div className="absolute top-[50px] right-[200px] scale-y-70">
       
         <BarChart data={data} />
       </div>
