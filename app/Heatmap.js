@@ -10,8 +10,8 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 
 // 定义颜色比例函数
-const getColor = (value) => {
-  let newvalue = (value - 0.017282513)*3.3
+const getColor = (value,minval,maxval) => {
+  let newvalue = (value - minval)/(maxval-minval);
 
   const r = Math.floor(254 * newvalue + 134 * (1 - newvalue));
   const g = Math.floor(181 * newvalue + 196 * (1 - newvalue));
@@ -65,7 +65,18 @@ const Heatmap = () => {
     const rows = options[yOption].length;
     const cols = options[xOption].length;
     const newData = Array(rows).fill(null).map(() => Array(cols).fill(null));
-    
+
+    let minValue = Infinity;
+    let maxValue = -Infinity;
+
+    data.forEach((row) => {
+      if (row.xVariable === xOption && row.yVariable === yOption) {
+        const value = parseFloat(row['Average Error']);
+        if (value < minValue) minValue = value;
+        if (value > maxValue) maxValue = value;
+      }
+    });
+
     data.forEach((row) => {
       if (row.xVariable === xOption && row.yVariable === yOption) {
         const xValue = parseInt(row.xValue) || row.xValue;
@@ -74,7 +85,7 @@ const Heatmap = () => {
         const xIndex = options[xOption].indexOf(xValue);
         const yIndex = options[yOption].indexOf(yValue);
         if (xIndex >= 0 && yIndex >= 0) {
-          newData[yIndex][xIndex] = value;
+          newData[yIndex][xIndex] = { value, color: getColor(value, minValue, maxValue) };
         }
       }
     });
@@ -137,17 +148,17 @@ const Heatmap = () => {
           {filteredData.map((row, i) => (
             <tr key={i}>
               <td className="text-center font-bold">{options[yOption][i]}</td>
-              {row.map((value, j) => (
+              {row.map((cell, j) => (
                 <td
                   key={j}
                   className="text-center text-white"
                   style={{
                     width: `${400 / cols}px`,
                     height: `${400 / rows}px`,
-                    backgroundColor: value !== null ? getColor(value) : 'gray',
+                    backgroundColor: cell !== null ? cell.color : 'gray',
                   }}
                 >
-                  {value !== null ? value.toFixed(2) : 'N/A'}
+                  {cell !== null ? cell.value.toFixed(2) : 'N/A'}
                 </td>
               ))}
             </tr>
