@@ -12,11 +12,23 @@ import React, { useState } from "react";{/* 视图联动使用 */}
 
 export default function Home() {
   const [HeatmapYAxis,setHeatmapYAxis] = useState('BarChartType');
-  const [HeatmapXAxis,setHeatmapXAxis] = useState('ModelName');
+  const [HeatmapXAxis,setHeatmapXAxis] = useState('DownsamplingLevel');
 
   const handleRadarButtonClick = (newXAxis,newYAxis) => {
-    setHeatmapXAxis(newXAxis);
-    setHeatmapYAxis(newYAxis);
+    console.log('handleRadarButtonClick', { newXAxis, newYAxis });
+    if(HeatmapXAxis!=newXAxis) setHeatmapXAxis(newXAxis);
+    if(HeatmapYAxis!=newYAxis) setHeatmapYAxis(newYAxis);
+  }
+
+  const [stateHeatmapSelected,setHeatmapSelect] = useState(null);
+  const handleHeatmapSelect = (control) => {
+    console.log('handleHeatmapSelect', { control });
+    setHeatmapSelect(prevControl => {
+      if (prevControl && prevControl.type === control.type) {
+        return prevControl; // 没有变化，保持原值
+      }
+      return control; // 值发生变化，更新
+    });
   }
   return (
     <div>
@@ -47,10 +59,22 @@ export default function Home() {
           height: 'auto' 
         }}
       >
-        <Heatmap xOption={HeatmapXAxis} yOption={HeatmapYAxis} />
+        <Heatmap 
+          xOption={HeatmapXAxis} 
+          yOption={HeatmapYAxis} 
+          onHeatmapSelect={handleHeatmapSelect ? handleHeatmapSelect : ()=>{
+            console.log("dummy onHeatmapSelect 1");
+          }}
+        />
       </div>
       <div className="absolute bottom-[23vh] right-[5vw] scale-70" style={{height:'30vh'}}>
-        <RadarChart data={data} onRadarButtonClick={handleRadarButtonClick} />
+        <RadarChart 
+          data={data} 
+          onRadarButtonClick={handleRadarButtonClick}
+          onHeatmapSelect={handleHeatmapSelect ? handleHeatmapSelect : ()=>{
+            console.log('dummy onHeatmapSelect 2');
+          }} 
+        />
       </div>
       <div className="absolute top-[3vh] right-[1vw] scale-y-70">
       

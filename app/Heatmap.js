@@ -48,7 +48,7 @@ const parseCSV = (text) => {
   return data;
 };
 
-const Heatmap = ({xOption: propsXOption,yOption: propsYOption}) => {
+const Heatmap = ({xOption: propsXOption,yOption: propsYOption, onHeatmapSelect}) => {
   
   const [data, setData] = useState([]);
   const [xOption, setXOption] = useState(propsXOption);
@@ -60,10 +60,29 @@ const Heatmap = ({xOption: propsXOption,yOption: propsYOption}) => {
     });
   }, []);
 
-  useEffect(() => {
-    setXOption(propsXOption);
-    setYOption(propsYOption);
-  }, [propsXOption, propsYOption]);
+/* 从雷达到色块 */
+/* 注意避免无限setState，只在点击时进行判定 (所以useEffect也就不需要了)*/
+  const handleXOptionChange = (newXOption) => {
+    setXOption(newXOption);
+    if (newXOption === 'ModelName' && (yOption === 'SamplingMethod' || yOption === 'BarChartType')) {
+      console.log('change radar from heatmap newX Y ohs',newXOption,yOption,onHeatmapSelect);
+      onHeatmapSelect && onHeatmapSelect({ type: yOption });
+    } else if (yOption === 'ModelName' && (newXOption === 'SamplingMethod' || newXOption === 'BarChartType')) {
+      console.log('change radar from heatmap newX Y',newXOption,yOption);
+      onHeatmapSelect && onHeatmapSelect({ type: newXOption });
+    }
+  };
+  const handleYOptionChange = (newYOption) => {
+    setYOption(newYOption);
+    if (xOption === 'ModelName' && (newYOption === 'SamplingMethod' || newYOption === 'BarChartType')) {
+      console.log('change radar from heatmap X newY',xOption,newYOption);
+      onHeatmapSelect && onHeatmapSelect({ type: newYOption });
+    } else if (newYOption === 'ModelName' && (xOption === 'SamplingMethod' || xOption === 'BarChartType')) {
+      console.log('change radar from heatmap X newY',xOption,newYOption);
+      onHeatmapSelect && onHeatmapSelect({ type: xOption });
+    }
+  };
+
 
   const filteredData = React.useMemo(() => {
     if (!data.length) return [];
@@ -111,7 +130,7 @@ const Heatmap = ({xOption: propsXOption,yOption: propsYOption}) => {
           id="demo-simple-select"
           value={xOption}
           label="Select X Axis"
-          onChange={(opt_click) => setXOption(opt_click.target.value)}
+          onChange={(opt_click) => handleXOptionChange(opt_click.target.value)}
         >
           {Object.keys(options).map((key) => (
             <MenuItem key={key} value={key}>
@@ -127,7 +146,7 @@ const Heatmap = ({xOption: propsXOption,yOption: propsYOption}) => {
           id="demo-simple-select"
           value={yOption}
           label="Select Y Axis"
-          onChange={(opt_click) => setYOption(opt_click.target.value)}
+          onChange={(opt_click) => handleYOptionChange(opt_click.target.value)}
         >
           {Object.keys(options).map((key) => (
             <MenuItem key={key} value={key}>

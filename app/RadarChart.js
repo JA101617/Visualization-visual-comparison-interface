@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { Radar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -48,10 +48,18 @@ const buttonStyles = {
   color: 'white',
 };
 
-const RadarChart = ({onRadarButtonClick}) => {
-  const [selectedLabelType, setSelectedLabelType] = useState('SamplingMethod');
-  const [showBothDatasets, setShowBothDatasets] = useState(false);
+const RadarChart = ({onRadarButtonClick, onHeatmapSelect}) => {
+  const [stateSelectedLabelType, setSelectedLabelType] = useState('SamplingMethod');
+  const [stateShowBothDatasets, setShowBothDatasets] = useState(false);
 
+  useEffect(()=>{
+    console.log('useEffect for heatmapselect or labeltype change')
+    if(onHeatmapSelect && onHeatmapSelect.type && stateSelectedLabelType !== onHeatmapSelect.type ){
+      console.log('useEffect for onHeatmapSelect', { onHeatmapSelect, selectedLabelType: stateSelectedLabelType });
+      setSelectedLabelType(onHeatmapSelect.type);
+      setShowBothDatasets(true);
+    }
+  },[onHeatmapSelect,stateSelectedLabelType]);
   // 数据集
   const datasets = [
     {
@@ -87,24 +95,25 @@ const RadarChart = ({onRadarButtonClick}) => {
   // 处理标签类型切换
   const handleChangeLabelType = (labelType) => {
     setSelectedLabelType(labelType);
+    onRadarButtonClick('ModelName',labelType);
   };
 
   // 处理数据集显示切换
   const handleShowBothDatasets = () => {
-    setShowBothDatasets(!showBothDatasets);
+    setShowBothDatasets(!stateShowBothDatasets);
   };
 
   // 图表数据
   const chartData = {
-    labels: datasets[0][selectedLabelType === 'SamplingMethod' ? 'labels' : 'chartLabels'],
-    datasets: showBothDatasets
+    labels: datasets[0][stateSelectedLabelType === 'SamplingMethod' ? 'labels' : 'chartLabels'],
+    datasets: stateShowBothDatasets
       ? datasets.map(dataset => ({
           ...dataset,
-          data: dataset[selectedLabelType === 'SamplingMethod' ? 'data' : 'chartData'],
+          data: dataset[stateSelectedLabelType === 'SamplingMethod' ? 'data' : 'chartData'],
         }))
       : [{
           ...datasets[0],
-          data: datasets[0][selectedLabelType === 'SamplingMethod' ? 'data' : 'chartData'],
+          data: datasets[0][stateSelectedLabelType === 'SamplingMethod' ? 'data' : 'chartData'],
         }],
   };
 
@@ -116,7 +125,7 @@ const RadarChart = ({onRadarButtonClick}) => {
           display: true,
           color: 'rgba(128, 128, 128, 0.2)',
           lineWidth: 1,
-          count: selectedLabelType === 'SamplingMethod' ? 4 : 5,
+          count: stateSelectedLabelType === 'SamplingMethod' ? 4 : 5,
         },
         grid: {
           circular: true,
@@ -175,7 +184,11 @@ const RadarChart = ({onRadarButtonClick}) => {
     <div >
       <div style={{ display: 'flex', justifyContent: 'center' }}> 
         <Button variant="outlined"
-          onClick={() => {handleChangeLabelType('SamplingMethod'); onRadarButtonClick('ModelName','SamplingMethod')}}
+          onClick={() => {
+            console.log('receive sampling method changing request');
+            handleChangeLabelType('SamplingMethod');
+            onRadarButtonClick('ModelName','SamplingMethod');
+          }}
           style={{marginRight:'10px'}}
           sx={{ 
             borderColor: 'rgb(164,168,169)',
@@ -187,7 +200,7 @@ const RadarChart = ({onRadarButtonClick}) => {
           采样方法
         </Button>
         <Button variant="outlined"
-          onClick={() => {handleChangeLabelType('chart_type');onRadarButtonClick('ModelName', 'BarChartType'); }}
+          onClick={() => {handleChangeLabelType('BarChartType');onRadarButtonClick('ModelName', 'BarChartType'); }}
           style={{marginRight:'10px'}}
           sx={{ 
             borderColor: 'rgb(164,168,169)',
@@ -207,7 +220,7 @@ const RadarChart = ({onRadarButtonClick}) => {
             fontSize: '17px'
           }}
         > {/* 灰色按钮 */}
-          {showBothDatasets ? '显示单个数据集' : '显示所有数据集'}
+          {stateShowBothDatasets ? '显示单个数据集' : '显示所有数据集'}
         </Button>
       </div>
       <Radar data={chartData} options={options} />
