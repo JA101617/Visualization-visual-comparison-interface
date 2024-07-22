@@ -48,17 +48,22 @@ const parseCSV = (text) => {
   return data;
 };
 
-const Heatmap = () => {
+const Heatmap = ({xOption: propsXOption,yOption: propsYOption}) => {
   
   const [data, setData] = useState([]);
-  const [xOption, setXOption] = useState('BarChartType');
-  const [yOption, setYOption] = useState('ModelName');
+  const [xOption, setXOption] = useState(propsXOption);
+  const [yOption, setYOption] = useState(propsYOption);
 
   useEffect(() => {
     fetchData().then((parsedData) => {
       setData(parsedData);
     });
   }, []);
+
+  useEffect(() => {
+    setXOption(propsXOption);
+    setYOption(propsYOption);
+  }, [propsXOption, propsYOption]);
 
   const filteredData = React.useMemo(() => {
     if (!data.length) return [];
@@ -68,7 +73,6 @@ const Heatmap = () => {
 
     let minValue = Infinity;
     let maxValue = -Infinity;
-
     data.forEach((row) => {
       if (row.xVariable === xOption && row.yVariable === yOption) {
         const value = parseFloat(row['Average Error']);
@@ -97,10 +101,10 @@ const Heatmap = () => {
   const cols = options[xOption].length;
   //const blockSize = Math.min(600 / cols, 600 / rows); // 600是容器的最大宽度和高度
 
-  return (
+  return ( 
     <div className="flex justify-start p-5" style={{ height: 'auto' }}>
     <div className="w-full max-w-2xl mx-auto" style={{ height: 'auto' }}>
-      <FormControl style={{ marginLeft: '180px' }}>
+      <FormControl style={{ marginLeft: '10vw', width: '15vw'}}>
         <InputLabel id="demo-simple-select-label">Select X Axis</InputLabel>
         <Select
           labelId="demo-simple-select-label"
@@ -116,7 +120,7 @@ const Heatmap = () => {
           ))}
         </Select>
       </FormControl>
-      <FormControl  style={{ marginLeft: '10px' }}>
+      <FormControl  style={{ marginLeft: '10px' , width: '15vw'}}>
         <InputLabel id="demo-simple-select-label">Select Y Axis</InputLabel>
         <Select
           labelId="demo-simple-select-label"
@@ -147,7 +151,7 @@ const Heatmap = () => {
         <tbody>
           {filteredData.map((row, i) => (
             <tr key={i}>
-              <td className="text-center font-bold">{options[yOption][i]}</td>
+              <td className="text-right pr-3 font-bold">{options[yOption][i]}</td>
               {row.map((cell, j) => (
                 <td
                   key={j}

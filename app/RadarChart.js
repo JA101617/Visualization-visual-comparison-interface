@@ -48,8 +48,8 @@ const buttonStyles = {
   color: 'white',
 };
 
-const RadarChart = () => {
-  const [selectedLabelType, setSelectedLabelType] = useState('train_method');
+const RadarChart = ({onRadarButtonClick}) => {
+  const [selectedLabelType, setSelectedLabelType] = useState('SamplingMethod');
   const [showBothDatasets, setShowBothDatasets] = useState(false);
 
   // 数据集
@@ -96,15 +96,15 @@ const RadarChart = () => {
 
   // 图表数据
   const chartData = {
-    labels: datasets[0][selectedLabelType === 'train_method' ? 'labels' : 'chartLabels'],
+    labels: datasets[0][selectedLabelType === 'SamplingMethod' ? 'labels' : 'chartLabels'],
     datasets: showBothDatasets
       ? datasets.map(dataset => ({
           ...dataset,
-          data: dataset[selectedLabelType === 'train_method' ? 'data' : 'chartData'],
+          data: dataset[selectedLabelType === 'SamplingMethod' ? 'data' : 'chartData'],
         }))
       : [{
           ...datasets[0],
-          data: datasets[0][selectedLabelType === 'train_method' ? 'data' : 'chartData'],
+          data: datasets[0][selectedLabelType === 'SamplingMethod' ? 'data' : 'chartData'],
         }],
   };
 
@@ -116,7 +116,7 @@ const RadarChart = () => {
           display: true,
           color: 'rgba(128, 128, 128, 0.2)',
           lineWidth: 1,
-          count: selectedLabelType === 'train_method' ? 4 : 5,
+          count: selectedLabelType === 'SamplingMethod' ? 4 : 5,
         },
         grid: {
           circular: true,
@@ -175,7 +175,7 @@ const RadarChart = () => {
     <div >
       <div style={{ display: 'flex', justifyContent: 'center' }}> 
         <Button variant="outlined"
-          onClick={() => handleChangeLabelType('train_method')}
+          onClick={() => {handleChangeLabelType('SamplingMethod'); onRadarButtonClick('ModelName','SamplingMethod')}}
           style={{marginRight:'10px'}}
           sx={{ 
             borderColor: 'rgb(164,168,169)',
@@ -184,10 +184,10 @@ const RadarChart = () => {
           }}
           //style={{ ...buttonStyles, backgroundColor: chartColors.resnet.border }}
         >
-          训练方法
+          采样方法
         </Button>
         <Button variant="outlined"
-          onClick={() => handleChangeLabelType('chart_type')}
+          onClick={() => {handleChangeLabelType('chart_type');onRadarButtonClick('ModelName', 'BarChartType'); }}
           style={{marginRight:'10px'}}
           sx={{ 
             borderColor: 'rgb(164,168,169)',

@@ -1,12 +1,23 @@
-import Image from "next/image";
-import Heatmap from "./Heatmap.js"
-import Head from "next/head"
+"use client"
 
-import BarChart from "./BarChart.js"
+import Image from "next/image";
+import Heatmap from "./Heatmap.js";
+import Head from "next/head";
+
+import BarChart from "./BarChart.js";
 import data from './data.json';
-import RadarChart from "./RadarChart.js"
+import RadarChart from "./RadarChart.js";
+
+import React, { useState } from "react";{/* 视图联动使用 */}
 
 export default function Home() {
+  const [HeatmapYAxis,setHeatmapYAxis] = useState('BarChartType');
+  const [HeatmapXAxis,setHeatmapXAxis] = useState('ModelName');
+
+  const handleRadarButtonClick = (newXAxis,newYAxis) => {
+    setHeatmapXAxis(newXAxis);
+    setHeatmapYAxis(newYAxis);
+  }
   return (
     <div>
       <h1>
@@ -36,10 +47,10 @@ export default function Home() {
           height: 'auto' 
         }}
       >
-        <Heatmap />
+        <Heatmap xOption={HeatmapXAxis} yOption={HeatmapYAxis} />
       </div>
-      <div className="absolute bottom-[14vh] right-[5vw]" style={{height:'40vh'}}>
-        <RadarChart data={data} />
+      <div className="absolute bottom-[23vh] right-[5vw] scale-70" style={{height:'30vh'}}>
+        <RadarChart data={data} onRadarButtonClick={handleRadarButtonClick} />
       </div>
       <div className="absolute top-[3vh] right-[1vw] scale-y-70">
       
