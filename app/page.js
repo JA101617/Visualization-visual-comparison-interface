@@ -12,7 +12,7 @@ export default function Home() {
       <Head>
         <title>Data Visualization</title>
       </Head>
-      <div className="absolute inset-y-0 left-[100px] items-start h-screen">
+      <div className="absolute inset-y-0 left-[300px] items-start h-screen">
         <h1>
           <title>AI Training Data Visualization</title>
         </h1>
@@ -20,10 +20,10 @@ export default function Home() {
           <Heatmap />
         </main>
       </div>
-      <div className="absolute bottom-[10px] right-[200px]">
+      <div className="absolute bottom-[20px] right-[250px]">
         <RadarChart data={data} />
       </div>
-      <div className="absolute top-[20px] right-[100px] scale-y-70">
+      <div className="absolute top-[30px] right-[150px] scale-y-70">
       
         <BarChart data={data} />
       </div>

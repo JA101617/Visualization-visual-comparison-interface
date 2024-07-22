@@ -11,6 +11,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js/auto';
+import Button from '@mui/material/Button'
 
 ChartJS.register(
   RadialLinearScale,
@@ -171,23 +172,43 @@ const RadarChart = () => {
   };
 
   return (
-    <div>
+    <div >
       <div style={{ display: 'flex', justifyContent: 'center' }}> 
-        <button
+        <Button variant="outlined"
           onClick={() => handleChangeLabelType('train_method')}
-          style={{ ...buttonStyles, backgroundColor: chartColors.resnet.border }}
+          style={{marginRight:'10px'}}
+          sx={{ 
+            borderColor: 'rgb(164,168,169)',
+            color: 'black',
+            fontSize: '17px'
+          }}
+          //style={{ ...buttonStyles, backgroundColor: chartColors.resnet.border }}
         >
           训练方法
-        </button>
-        <button
+        </Button>
+        <Button variant="outlined"
           onClick={() => handleChangeLabelType('chart_type')}
-          style={{ ...buttonStyles, backgroundColor: chartColors.vgg.border }}
+          style={{marginRight:'10px'}}
+          sx={{ 
+            borderColor: 'rgb(164,168,169)',
+            color: 'black', 
+            fontSize: '17px'
+          }}
+          //style={{ ...buttonStyles, backgroundColor: chartColors.vgg.border }}
         >
           图表类型
-        </button>
-        <button onClick={handleShowBothDatasets} style={{ ...buttonStyles, backgroundColor: '#6c757d' }}> {/* 灰色按钮 */}
+        </Button>
+        <Button variant="outlined"
+          onClick={handleShowBothDatasets} 
+          style={{marginRight:'10px'}}
+          sx={{ //样式统一
+            borderColor: 'rgb(164,168,169)',
+            color: 'black',
+            fontSize: '17px'
+          }}
+        > {/* 灰色按钮 */}
           {showBothDatasets ? '显示单个数据集' : '显示所有数据集'}
-        </button>
+        </Button>
       </div>
       <Radar data={chartData} options={options} />
     </div>
