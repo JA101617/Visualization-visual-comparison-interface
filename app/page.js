@@ -40,15 +40,14 @@ export default function Home() {
       <h1>
         <title>AI Training Data Visualization</title>
       </h1>
+      <div>
       <div style={{
-          position: 'absolute',
-          top: '2vh',
-          left: '1vw',
           width: '18vw',
           height: '95vh',
           backgroundColor: 'white',
           borderRadius: '3vh',
           padding: '3vh',
+          float: 'left',
           boxShadow: ['0 2vh 4vh rgba(0, 0, 0, 0.1)', '0 -2vh 4vh rgba(0, 0, 0, 0.1)', '-2vw 2vh 4vh rgba(0, 0, 0, 0.1)', '-2vw -2vh 4vh rgba(0, 0, 0, 0.1)']
         }}>
         <h2>About us</h2>
@@ -57,12 +56,14 @@ export default function Home() {
         <p>The dataset we are working with consists of empirical study results from several AI algorithms reading charts. These charts include five different types of bar charts, each with unique characteristics. The study aims to understand the differences in AI model outcomes based on the input chart types. Specifically, the dataset explores how well AI models can estimate the ratio between two bars in the charts. </p>
 
       </div>
-      <div className="absolute inset-y-0 left-[33vh]" 
+      <div className="" 
         style={{ 
           display: 'flex', 
           justifyContent: 'flex-start', 
           alignItems: 'center', 
-          height: 'auto' 
+          width:'40vw',
+          height: 'auto' ,
+          float: 'left'
         }}
       >
         <Heatmap 
@@ -74,15 +75,18 @@ export default function Home() {
           xUpdater={setHeatmapXAxis}
         />
       </div>
-      <div className="absolute bottom-[30vh] right-[5vw] scale-60" style={{height:'25vh'}}>
+      <div style={{width:"40vw", float: 'left'}}>
+      <div className="" style={{height:'35vh'}}>
+        <BarChart data={data} />
+      </div>
+      <div className="" style={{height:'35vh'}}>
         <RadarChart 
           data={data} 
           onRadarButtonClick={handleRadarButtonClick}
           stateHeatmapSelect={stateHeatmapSelected} 
         />
       </div>
-      <div className="absolute top-[2vh] right-[13vw]">
-        <BarChart data={data} />
+      </div>
       </div>
     </div>
   );
