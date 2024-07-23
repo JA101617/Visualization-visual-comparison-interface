@@ -1,5 +1,12 @@
+"use client"
+
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import * as d3 from 'd3';
+import Box from '@mui/material/Box';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 const BarChart = ({ data }) => {
   const [dataType, setDataType] = useState('ValDataSpan');
@@ -47,9 +54,9 @@ const BarChart = ({ data }) => {
 
   const drawChart = () => {
     const containerWidth = 475;
-    const containerHeight = 400;
+    const containerHeight = 355;
 
-    const margin = { top: 40, right: 100, bottom: 60, left: 60 };
+    const margin = { top: 70, right: 100, bottom: 30, left: 50 };
     const width = containerWidth - margin.left - margin.right;
     const height = containerHeight - margin.top - margin.bottom;
 
@@ -207,24 +214,44 @@ if (dataType === 'TrainDataSpan') {
   };
 
   return (
-    <div ref={containerRef} style={{ width: '95%', height: '90%', position: 'relative' }}>
-      <div style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 10 }}>
-        <select onChange={handleDataTypeChange} value={dataType}>
-          <option value="ValDataSpan">ValDataSpan</option>
-          <option value="TestDataSpan">TestDataSpan</option>
-          <option value="TrainDataSpan">TrainDataSpan</option>
-        </select>
-        <select onChange={handleColorByChange} value={colorBy} style={{ marginLeft: '10px' }}>
-          <option value="BarChartType">BarChartType</option>
-          <option value="DownsamplingLevel">DownsamplingLevel</option>
-          <option value="SamplingMethod">SamplingMethod</option>
-          <option value="SamplingTarget">SamplingTarget</option>
-          <option value="ModelName">ModelName</option>
-        </select>
+    <div ref={containerRef} style={{ width: '95%', height: '90%', position: 'relative' }} >
+      <div style={{ display: 'flex', alignItems: 'center', position: 'absolute', top: '10px', left: '80px', zIndex: 10 }}>
+        <FormControl style={{ marginRight: '10px', marginBottom:'10px', minWidth: '100px', maxWidth: '150px', width: '10vw', height:'5vh'}}>
+          <InputLabel id="demo-simple-select-label">Select X Axis</InputLabel>
+          <Select
+            labelId="data-type-select-label"
+            id="data-type-select"
+            value={dataType}
+            label="Select Data Type"
+            onChange={handleDataTypeChange}
+            style={{ width: '100%' }} // Set width to 100% to fill the FormControl
+          >
+            <MenuItem value="ValDataSpan">ValDataSpan</MenuItem>
+            <MenuItem value="TestDataSpan">TestDataSpan</MenuItem>
+            <MenuItem value="TrainDataSpan">TrainDataSpan</MenuItem>
+          </Select>
+        </FormControl>
+        <FormControl style={{ marginRight: '10px',marginBottom:'10px', minWidth: '100px', maxWidth: '150px', width: '10vw', height:'5vh'}}>
+          <InputLabel id="color-by-select-label">Color By</InputLabel>
+          <Select
+            labelId="color-by-select-label"
+            id="color-by-select"
+            value={colorBy}
+            label="Color By"
+            onChange={handleColorByChange}
+            style={{ width: '100%' }} // Set width to 100% to fill the FormControl
+          >
+            <MenuItem value="BarChartType">BarChartType</MenuItem>
+            <MenuItem value="DownsamplingLevel">DownsamplingLevel</MenuItem>
+            <MenuItem value="SamplingMethod">SamplingMethod</MenuItem>
+            <MenuItem value="SamplingTarget">SamplingTarget</MenuItem>
+            <MenuItem value="ModelName">ModelName</MenuItem>
+          </Select>
+        </FormControl>
       </div>
       {chartData.length > 0 ? (
         <>
-          <svg ref={svgRef} style={{ width: '100%', height: '100%' }}></svg>
+          <svg ref={svgRef} style={{ width: '165%', height: '100%' }}></svg>
           <div id="tooltip" style={{
             position: 'absolute',
             display: 'none',
