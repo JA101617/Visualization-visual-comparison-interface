@@ -4,8 +4,8 @@ import Image from "next/image";
 import Heatmap from "./Heatmap.js";
 import Head from "next/head";
 
-// import BarChart from "./BarChart.js";
-import BarChart from "./new10BarChart.js";
+import BarChart from "./BarChart.js";
+// import BarChart from "./new10BarChart.js";
 import data from './data.json';
 import RadarChart from "./RadarChart.js";
 

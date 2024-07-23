@@ -1,104 +1,183 @@
-"use client"
-
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import * as d3 from 'd3';
-import Box from '@mui/material/Box';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 const BarChart = ({ data }) => {
-  const [chartData, setChartData] = useState(data.ValDataSpan);
   const [dataType, setDataType] = useState('ValDataSpan');
   const [colorBy, setColorBy] = useState('BarChartType');
   const containerRef = useRef();
   const svgRef = useRef();
 
-  const getAllPossibleValues = (attribute) => {
-    const allValues = new Set();
-    Object.values(data).forEach(dataSet => {
-      dataSet.forEach(item => {
-        if (item[attribute] !== undefined) {
-          allValues.add(item[attribute]);
-        }
-      });
-    });
-    return Array.from(allValues);
-  };
+  const chartData = useMemo(() => {
+    if (data && typeof data === 'object' && dataType in data) {
+      return data[dataType];
+    }
+    return [];
+  }, [data, dataType]);
+
+  const getAllPossibleValues = useMemo(() => {
+    return (attribute) => {
+      const allValues = new Set();
+      if (data && typeof data === 'object') {
+        Object.values(data).forEach(dataSet => {
+          if (Array.isArray(dataSet)) {
+            dataSet.forEach(item => {
+              if (item && typeof item === 'object' && attribute in item) {
+                allValues.add(item[attribute]);
+              }
+            });
+          }
+        });
+      }
+      return Array.from(allValues);
+    };
+  }, [data]);
 
   useEffect(() => {
     if (chartData && chartData.length > 0) {
+      console.log('Effect triggered with dataType:', dataType);
       drawChart();
     }
-  }, [chartData, colorBy]);
+  }, [chartData, colorBy, dataType]);
 
   useEffect(() => {
-    window.addEventListener('resize', drawChart);
-    return () => window.removeEventListener('resize', drawChart);
-  }, []);
+    const handleResize = () => drawChart();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [chartData, colorBy]);
 
   const drawChart = () => {
-    //const containerWidth = containerRef.current.clientWidth;
-    //const containerHeight = window.innerHeight * 0.8;
+    const containerWidth = 475;
+    const containerHeight = 400;
 
-    const margin = { top: 0, right: 110, bottom: 10, left: 60 };
-    const width = 300;//containerWidth - margin.left - margin.right;
-    const height = 250;//containerHeight - margin.top - margin.bottom;
+    const margin = { top: 40, right: 100, bottom: 60, left: 60 };
+    const width = containerWidth - margin.left - margin.right;
+    const height = containerHeight - margin.top - margin.bottom;
 
     d3.select(svgRef.current).selectAll("*").remove();
 
     const svg = d3.select(svgRef.current)
-      .attr('width', width + margin.left + margin.right)
-      .attr('height', height + margin.top + margin.bottom)
+      .attr('width', '100%')
+      .attr('height', '100%')
+      .attr('viewBox', `0 0 ${containerWidth} ${containerHeight}`)
       .append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
     const sortedData = [...chartData].sort((a, b) => a.x - b.x);
 
-    // 根据数据类型调整柱状图间距和最小宽度
-    const barPadding = dataType === 'TrainDataSpan' ? 0.1 : 0.001;
-    const minBarWidth = dataType === 'TrainDataSpan' ? 1 : 0.1;
+    const xValues = Array.from(new Set(sortedData.map(d => d.x))).sort((a, b) => a - b);
+    const colorValues = getAllPossibleValues(colorBy);
 
-    const x = d3.scaleBand()
+    const xScale = d3.scaleBand()
       .range([0, width])
-      .padding(barPadding)
-      .domain(sortedData.map(d => d.x));
+      .domain(xValues)
+      .paddingInner(0.1)
+      .paddingOuter(0.05);
 
     const y = d3.scaleLinear()
       .range([height, 0])
       .domain([0, d3.max(sortedData, d => d.y)]);
 
-    // 计算实际柱宽
-    const barWidth = Math.max(x.bandwidth(), minBarWidth);
-
-    const colorValues = getAllPossibleValues(colorBy);
     const colorScale = d3.scaleOrdinal()
       .domain(colorValues)
-      .range(d3.schemeCategory10);
+      .range(d3.schemePastel2);
 
-    svg.selectAll('.bar')
-      .data(sortedData)
-      .enter().append('rect')
-      .attr('class', 'bar')
-      .attr('x', d => x(d.x))
-      .attr('width', barWidth)
-      .attr('y', d => y(d.y))
-      .attr('height', d => height - y(d.y))
-      .attr('fill', d => colorScale(d[colorBy]));
+    const opacity = 0.8;
+    
 
-    // 添加x轴
+if (dataType === 'TrainDataSpan') {
+  const bars = svg.selectAll('.bar')
+    .data(sortedData)
+    .enter().append('g')
+    .attr('class', 'bar-group');
+
+  bars.append('rect')
+    .attr('class', 'bar')
+    .attr('x', d => xScale(d.x))
+    .attr('y', d => y(d.y))
+    .attr('width', xScale.bandwidth())
+    .attr('height', d => height - y(d.y))
+    .attr('fill', d => d3.color(colorScale(d[colorBy])).copy({opacity}))
+    .attr('stroke', 'none')
+    .attr('stroke-width', 2);
+
+  bars.append('text')
+    .attr('class', 'x-label')
+    .attr('x', d => xScale(d.x) + xScale.bandwidth() / 2)
+    .attr('y', height + 20)
+    .attr('text-anchor', 'middle')
+    .text(d => d.x.toLocaleString())
+    .style('font-size', '10px')
+    .style('fill', 'black')
+    .style('opacity', 0);
+
+  bars.on('mouseover', function(event, d) {
+    d3.select(this).select('.x-label').style('opacity', 1);
+    d3.select(this).select('.bar').attr('stroke', 'black');
+  })
+  .on('mouseout', function() {
+    d3.select(this).select('.x-label').style('opacity', 0);
+    d3.select(this).select('.bar').attr('stroke', 'none');
+  });
+}else {
+      const xSubgroup = d3.scaleBand()
+        .domain(colorValues)
+        .range([0, xScale.bandwidth()])
+        .padding(0.05);
+    
+      const barWidth = xSubgroup.bandwidth();
+    
+      const groups = svg.selectAll('.group')
+        .data(xValues)
+        .enter().append('g')
+        .attr('class', 'group')
+        .attr('transform', d => `translate(${xScale(d)},0)`);
+    
+      const bars = groups.selectAll('.bar')
+        .data(d => sortedData.filter(item => item.x === d))
+        .enter().append('rect')
+        .attr('class', 'bar')
+        .attr('x', d => xSubgroup(d[colorBy]))
+        .attr('y', d => y(d.y))
+        .attr('width', barWidth)
+        .attr('height', d => height - y(d.y))
+        .attr('fill', d => d3.color(colorScale(d[colorBy])).copy({opacity}))
+        .attr('stroke', 'none')
+        .attr('stroke-width', 2);
+
+      groups.append('text')
+        .attr('class', 'x-label')
+        .attr('x', xScale.bandwidth() / 2)
+        .attr('y', height + 20)
+        .attr('text-anchor', 'middle')
+        .text(d => d.toLocaleString())
+        .style('font-size', '10px')
+        .style('fill', 'black')
+        .style('opacity', 0);
+
+      bars.on('mouseover', function(event, d) {
+        d3.select(this).attr('stroke', 'black');
+        d3.select(this.parentNode).select('.x-label').style('opacity', 1);
+      })
+      .on('mouseout', function() {
+        d3.select(this).attr('stroke', 'none');
+        d3.select(this.parentNode).select('.x-label').style('opacity', 0);
+      });
+
+      groups.on('mouseover', function() {
+        d3.select(this).select('.x-label').style('opacity', 1);
+      })
+      .on('mouseout', function() {
+        d3.select(this).select('.x-label').style('opacity', 0);
+      });
+    }
     svg.append('g')
       .attr('transform', `translate(0,${height})`)
-      .call(d3.axisBottom(x).tickValues([]))
-      .selectAll("text")
-      .remove();
+      .call(d3.axisBottom(xScale).tickSize(0).tickFormat(''));
 
-    // 添加y轴
     svg.append('g')
+      .attr('transform', `translate(-10,0)`)
       .call(d3.axisLeft(y));
 
-    // 添加图例
     const legend = svg.selectAll(".legend")
       .data(colorValues)
       .enter().append("g")
@@ -109,7 +188,7 @@ const BarChart = ({ data }) => {
       .attr("x", width + 10)
       .attr("width", 18)
       .attr("height", 18)
-      .style("fill", colorScale);
+      .style("fill", d => d3.color(colorScale(d)).copy({opacity}));
 
     legend.append("text")
       .attr("x", width + 35)
@@ -121,7 +200,6 @@ const BarChart = ({ data }) => {
 
   const handleDataTypeChange = (e) => {
     setDataType(e.target.value);
-    setChartData(data[e.target.value]);
   };
 
   const handleColorByChange = (e) => {
@@ -129,41 +207,36 @@ const BarChart = ({ data }) => {
   };
 
   return (
-    <div ref={containerRef} style={{ width: '100%', height: '40vh' }}>
-      <div className='bottom-[10px] '>
-        <FormControl >
-          <InputLabel id="data-type-select-label">Select Data Type</InputLabel>
-          <Select
-            labelId="data-type-select-label"
-            id="data-type-select"
-            value={dataType}
-            label="Select Data Type"
-            onChange={handleDataTypeChange}
-          >
-            <MenuItem value="ValDataSpan">ValDataSpan</MenuItem>
-            <MenuItem value="TestDataSpan">TestDataSpan</MenuItem>
-            <MenuItem value="TrainDataSpan">TrainDataSpan</MenuItem>
-          </Select>
-        </FormControl>
-        <FormControl  style={{ marginLeft: '10px' }}>
-          <InputLabel id="color-by-select-label">Color By</InputLabel>
-          <Select
-            labelId="color-by-select-label"
-            id="color-by-select"
-            value={colorBy}
-            label="Color By"
-            onChange={handleColorByChange}
-          >
-            <MenuItem value="BarChartType">BarChartType</MenuItem>
-            <MenuItem value="DownsamplingLevel">DownsamplingLevel</MenuItem>
-            <MenuItem value="SamplingMethod">SamplingMethod</MenuItem>
-            <MenuItem value="SamplingTarget">SamplingTarget</MenuItem>
-            <MenuItem value="ModelName">ModelName</MenuItem>
-          </Select>
-        </FormControl>
+    <div ref={containerRef} style={{ width: '95%', height: '90%', position: 'relative' }}>
+      <div style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 10 }}>
+        <select onChange={handleDataTypeChange} value={dataType}>
+          <option value="ValDataSpan">ValDataSpan</option>
+          <option value="TestDataSpan">TestDataSpan</option>
+          <option value="TrainDataSpan">TrainDataSpan</option>
+        </select>
+        <select onChange={handleColorByChange} value={colorBy} style={{ marginLeft: '10px' }}>
+          <option value="BarChartType">BarChartType</option>
+          <option value="DownsamplingLevel">DownsamplingLevel</option>
+          <option value="SamplingMethod">SamplingMethod</option>
+          <option value="SamplingTarget">SamplingTarget</option>
+          <option value="ModelName">ModelName</option>
+        </select>
       </div>
-      <br></br>
-      <svg ref={svgRef}></svg>
+      {chartData.length > 0 ? (
+        <>
+          <svg ref={svgRef} style={{ width: '100%', height: '100%' }}></svg>
+          <div id="tooltip" style={{
+            position: 'absolute',
+            display: 'none',
+            background: 'rgba(0,0,0,0.7)',
+            color: 'white',
+            padding: '5px',
+            borderRadius: '3px'
+          }}></div>
+        </>
+      ) : (
+        <p>所选类型没有可用数据。</p>
+      )}
     </div>
   );
 };
