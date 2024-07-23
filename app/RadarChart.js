@@ -48,18 +48,18 @@ const buttonStyles = {
   color: 'white',
 };
 
-const RadarChart = ({onRadarButtonClick, onHeatmapSelect}) => {
+const RadarChart = ({onRadarButtonClick, stateHeatmapSelect}) => {
   const [stateSelectedLabelType, setSelectedLabelType] = useState('SamplingMethod');
   const [stateShowBothDatasets, setShowBothDatasets] = useState(false);
 
   useEffect(()=>{
     console.log('useEffect for heatmapselect or labeltype change')
-    if(onHeatmapSelect && onHeatmapSelect.type && stateSelectedLabelType !== onHeatmapSelect.type ){
-      console.log('useEffect for onHeatmapSelect', { onHeatmapSelect, selectedLabelType: stateSelectedLabelType });
-      setSelectedLabelType(onHeatmapSelect.type);
+    if(stateHeatmapSelect && stateHeatmapSelect.type && stateSelectedLabelType !== stateHeatmapSelect.type ){
+      console.log('useEffect for onHeatmapSelect', { onHeatmapSelect: stateHeatmapSelect, selectedLabelType: stateSelectedLabelType });
+      setSelectedLabelType(stateHeatmapSelect.type);
       setShowBothDatasets(true);
     }
-  },[onHeatmapSelect,stateSelectedLabelType]);
+  },[stateHeatmapSelect,stateSelectedLabelType]);
   // 数据集
   const datasets = [
     {
@@ -189,11 +189,11 @@ const RadarChart = ({onRadarButtonClick, onHeatmapSelect}) => {
             handleChangeLabelType('SamplingMethod');
             onRadarButtonClick('ModelName','SamplingMethod');
           }}
-          style={{marginRight:'10px'}}
+          style={{marginRight:'10px', height:'30px', marginTop:'20px'}}
           sx={{ 
             borderColor: 'rgb(164,168,169)',
             color: 'black',
-            fontSize: '17px'
+            fontSize: '15px'
           }}
           //style={{ ...buttonStyles, backgroundColor: chartColors.resnet.border }}
         >
@@ -204,11 +204,11 @@ const RadarChart = ({onRadarButtonClick, onHeatmapSelect}) => {
             handleChangeLabelType('BarChartType');
             onRadarButtonClick('ModelName', 'BarChartType'); 
           }}
-          style={{marginRight:'10px'}}
+          style={{marginRight:'10px', height:'30px', marginTop:'20px'}}
           sx={{ 
             borderColor: 'rgb(164,168,169)',
             color: 'black', 
-            fontSize: '17px'
+            fontSize: '15px'
           }}
           //style={{ ...buttonStyles, backgroundColor: chartColors.vgg.border }}
         >
@@ -216,11 +216,11 @@ const RadarChart = ({onRadarButtonClick, onHeatmapSelect}) => {
         </Button>
         <Button variant="outlined"
           onClick={handleShowBothDatasets} 
-          style={{marginRight:'10px'}}
+          style={{marginRight:'10px', height:'30px', marginTop:'20px'}}
           sx={{ //样式统一
             borderColor: 'rgb(164,168,169)',
             color: 'black',
-            fontSize: '17px'
+            fontSize: '15px'
           }}
         > {/* 灰色按钮 */}
           {stateShowBothDatasets ? '显示单个数据集' : '显示所有数据集'}

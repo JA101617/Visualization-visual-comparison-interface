@@ -73,8 +73,7 @@ const Heatmap = ({xOption: propsXOption, yOption: propsYOption, onHeatmapSelect,
   }, [propsYOption]);
 
 
-/* 从雷达到色块 */
-/* 注意避免无限setState，只在点击时进行判定 (所以useEffect也就不需要了)*/
+/* 响应点击选项处理器 */
   const handleXOptionChange = (newXOption) => {
     console.log('onHandleXOptionChange');
     if (propsXOption != newXOption) {
