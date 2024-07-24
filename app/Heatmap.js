@@ -138,42 +138,53 @@ const Heatmap = ({xOption: propsXOption, yOption: propsYOption, onHeatmapSelect,
   //const blockSize = Math.min(600 / cols, 600 / rows); // 600是容器的最大宽度和高度
 
   return ( 
-    <div className="flex justify-start p-5" style={{ height: 'auto' }}>
-    <div className="w-full max-w-2xl mx-auto" style={{ height: 'auto' }}>
-      <FormControl style={{ marginLeft: '10vw', width: '15vw'}}>
-        <InputLabel id="demo-simple-select-label">Select X Axis</InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={stateXOption}
-          label="Select X Axis"
-          onChange={(opt_click) => handleXOptionChange(opt_click.target.value)}
-        >
-          {Object.keys(options).filter(key => key !== stateYOption).map((key) => (
-            <MenuItem key={key} value={key} >
-              {key}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-      <FormControl  style={{ marginLeft: '10px' , width: '15vw'}}>
-        <InputLabel id="demo-simple-select-label">Select Y Axis</InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={stateYOption}
-          label="Select Y Axis"
-          onChange={(opt_click) => handleYOptionChange(opt_click.target.value)}
-        >
-          {Object.keys(options).filter(key => key !== stateXOption).map((key) => (
-            <MenuItem key={key} value={key}>
-              {key}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+    <div style={{
+      display: 'inline-block',
+      backgroundColor: 'white',
+      borderRadius: '3vh',
+      padding: '3vh',
+      boxShadow: '0 2vh 4vh rgba(0, 0, 0, 0.1), 0 -2vh 4vh rgba(0, 0, 0, 0.1), -2vw 2vh 4vh rgba(0, 0, 0, 0.1), -2vw -2vh 4vh rgba(0, 0, 0, 0.1)',
+      width: '550px',  // 固定宽度
+      height: '600px', // 固定高度
+      position: 'relative'
+    }}>
+      <div style={{display:'flex', alignItems: 'center'}}>
+        <FormControl style={{ margin: '10px ', width: '15vw' }}>
+          <InputLabel id="x-axis-select-label">Select X Axis</InputLabel>
+          <Select
+            labelId="x-axis-select-label"
+            id="x-axis-select"
+            value={stateXOption}
+            label="Select X Axis"
+            onChange={(opt_click) => handleXOptionChange(opt_click.target.value)}
+          >
+            {Object.keys(options).filter(key => key !== stateYOption).map((key) => (
+              <MenuItem key={key} value={key}>
+                {key}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControl style={{ marginLeft: '10px', width: '15vw' }}>
+          <InputLabel id="y-axis-select-label">Select Y Axis</InputLabel>
+          <Select
+            labelId="y-axis-select-label"
+            id="y-axis-select"
+            value={stateYOption}
+            label="Select Y Axis"
+            onChange={(opt_click) => handleYOptionChange(opt_click.target.value)}
+          >
+            {Object.keys(options).filter(key => key !== stateXOption).map((key) => (
+              <MenuItem key={key} value={key}>
+                {key}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </div>
+      
 
-      <table className="w-full border-collapse">
+      <table className="w-full border-collapse mt-4">
         <thead>
           <tr>
             <th></th>
@@ -193,8 +204,8 @@ const Heatmap = ({xOption: propsXOption, yOption: propsYOption, onHeatmapSelect,
                   key={j}
                   className="text-center text-white"
                   style={{
-                    width: `${60 / cols}vh`,
-                    height: `${60 / rows}vh`,
+                    width: `${55 / cols}vh`,
+                    height: `${55 / rows}vh`,
                     backgroundColor: cell !== null ? cell.color : 'gray',
                   }}
                 >
@@ -203,11 +214,9 @@ const Heatmap = ({xOption: propsXOption, yOption: propsYOption, onHeatmapSelect,
               ))}
             </tr>
           ))}
-          
         </tbody>
       </table>
     </div>
-  </div>
   );
 };
 

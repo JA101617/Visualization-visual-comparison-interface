@@ -181,7 +181,15 @@ const RadarChart = ({onRadarButtonClick, stateHeatmapSelect}) => {
   };
 
   return (
-    <div >
+      <div style={{
+        position: 'relative',
+        width: '450px',
+        height:'410px',
+        backgroundColor: 'white',
+        borderRadius: '3vh',
+        padding: '3vh',
+        boxShadow: '0 2vh 4vh rgba(0, 0, 0, 0.1), 0 -2vh 4vh rgba(0, 0, 0, 0.1), -2vw 2vh 4vh rgba(0, 0, 0, 0.1), -2vw -2vh 4vh rgba(0, 0, 0, 0.1)'
+      }}>
       <div style={{ display: 'flex', justifyContent: 'center' }}> 
         <Button variant="outlined"
           onClick={() => {
@@ -189,11 +197,11 @@ const RadarChart = ({onRadarButtonClick, stateHeatmapSelect}) => {
             handleChangeLabelType('SamplingMethod');
             onRadarButtonClick('ModelName','SamplingMethod');
           }}
-          style={{marginRight:'10px', height:'30px', marginTop:'20px'}}
+          style={{marginRight:'10px', height:'30px', marginTop:'0px'}}
           sx={{ 
             borderColor: 'rgb(164,168,169)',
             color: 'black',
-            fontSize: '15px'
+            fontSize: '13px'
           }}
           //style={{ ...buttonStyles, backgroundColor: chartColors.resnet.border }}
         >
@@ -204,11 +212,11 @@ const RadarChart = ({onRadarButtonClick, stateHeatmapSelect}) => {
             handleChangeLabelType('BarChartType');
             onRadarButtonClick('ModelName', 'BarChartType'); 
           }}
-          style={{marginRight:'10px', height:'30px', marginTop:'20px'}}
+          style={{marginRight:'10px', height:'30px', marginTop:'0px'}}
           sx={{ 
             borderColor: 'rgb(164,168,169)',
             color: 'black', 
-            fontSize: '15px'
+            fontSize: '13px'
           }}
           //style={{ ...buttonStyles, backgroundColor: chartColors.vgg.border }}
         >
@@ -216,17 +224,17 @@ const RadarChart = ({onRadarButtonClick, stateHeatmapSelect}) => {
         </Button>
         <Button variant="outlined"
           onClick={handleShowBothDatasets} 
-          style={{marginRight:'10px', height:'30px', marginTop:'20px'}}
+          style={{marginRight:'10px', height:'30px', marginTop:'0px'}}
           sx={{ //样式统一
             borderColor: 'rgb(164,168,169)',
             color: 'black',
-            fontSize: '15px'
+            fontSize: '13px'
           }}
         > {/* 灰色按钮 */}
           {stateShowBothDatasets ? '显示单个数据集' : '显示所有数据集'}
         </Button>
       </div>
-      <Radar data={chartData} options={options} />
+      <Radar style={{marginTop:'-10px'}} data={chartData} options={options} />
     </div>
   );
 };

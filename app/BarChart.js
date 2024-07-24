@@ -214,58 +214,71 @@ if (dataType === 'TrainDataSpan') {
   };
 
   return (
-    <div ref={containerRef} style={{ width: '95%', height: '90%', position: 'relative' }} >
-      <div style={{ display: 'flex', alignItems: 'center', position: 'absolute', top: '10px', left: '80px', zIndex: 10 }}>
-        <FormControl style={{ marginRight: '10px', marginBottom:'10px', minWidth: '100px', maxWidth: '150px', width: '10vw', height:'5vh'}}>
-          <InputLabel id="demo-simple-select-label">Select X Axis</InputLabel>
-          <Select
-            labelId="data-type-select-label"
-            id="data-type-select"
-            value={dataType}
-            label="Select Data Type"
-            onChange={handleDataTypeChange}
-            style={{ width: '100%' }} // Set width to 100% to fill the FormControl
-          >
-            <MenuItem value="ValDataSpan">ValDataSpan</MenuItem>
-            <MenuItem value="TestDataSpan">TestDataSpan</MenuItem>
-            <MenuItem value="TrainDataSpan">TrainDataSpan</MenuItem>
-          </Select>
-        </FormControl>
-        <FormControl style={{ marginRight: '10px',marginBottom:'10px', minWidth: '100px', maxWidth: '150px', width: '10vw', height:'5vh'}}>
-          <InputLabel id="color-by-select-label">Color By</InputLabel>
-          <Select
-            labelId="color-by-select-label"
-            id="color-by-select"
-            value={colorBy}
-            label="Color By"
-            onChange={handleColorByChange}
-            style={{ width: '100%' }} // Set width to 100% to fill the FormControl
-          >
-            <MenuItem value="BarChartType">BarChartType</MenuItem>
-            <MenuItem value="DownsamplingLevel">DownsamplingLevel</MenuItem>
-            <MenuItem value="SamplingMethod">SamplingMethod</MenuItem>
-            <MenuItem value="SamplingTarget">SamplingTarget</MenuItem>
-            <MenuItem value="ModelName">ModelName</MenuItem>
-          </Select>
-        </FormControl>
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'relative',
+        width: '450px',
+        height: '330px',
+        backgroundColor: 'white',
+        borderRadius: '3vh',
+        padding: '3vh',
+        boxShadow: '0 2vh 4vh rgba(0, 0, 0, 0.1), 0 -2vh 4vh rgba(0, 0, 0, 0.1), -2vw 2vh 4vh rgba(0, 0, 0, 0.1), -2vw -2vh 4vh rgba(0, 0, 0, 0.1)'
+      }}>
+        <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+          <div style={{ display: 'flex', alignItems: 'center', position: 'absolute', top: '10px', left: '50%', transform: 'translateX(-50%)', zIndex: 10 }}>
+            <FormControl style={{ marginRight: '10px', marginBottom: '10px', minWidth: '100px', maxWidth: '150px', width: '10vw', height: '5vh' }}>
+              <InputLabel id="demo-simple-select-label">Select X Axis</InputLabel>
+              <Select
+                labelId="data-type-select-label"
+                id="data-type-select"
+                value={dataType}
+                label="Select Data Type"
+                onChange={handleDataTypeChange}
+                style={{ width: '100%' }} // Set width to 100% to fill the FormControl
+              >
+                <MenuItem value="ValDataSpan">ValDataSpan</MenuItem>
+                <MenuItem value="TestDataSpan">TestDataSpan</MenuItem>
+                <MenuItem value="TrainDataSpan">TrainDataSpan</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl style={{ marginRight: '10px', marginBottom: '10px', minWidth: '100px', maxWidth: '150px', width: '10vw', height: '5vh' }}>
+              <InputLabel id="color-by-select-label">Color By</InputLabel>
+              <Select
+                labelId="color-by-select-label"
+                id="color-by-select"
+                value={colorBy}
+                label="Color By"
+                onChange={handleColorByChange}
+                style={{ width: '100%' }} // Set width to 100% to fill the FormControl
+              >
+                <MenuItem value="BarChartType">BarChartType</MenuItem>
+                <MenuItem value="DownsamplingLevel">DownsamplingLevel</MenuItem>
+                <MenuItem value="SamplingMethod">SamplingMethod</MenuItem>
+                <MenuItem value="SamplingTarget">SamplingTarget</MenuItem>
+                <MenuItem value="ModelName">ModelName</MenuItem>
+              </Select>
+            </FormControl>
+          </div>
+          {chartData.length > 0 ? (
+            <>
+              <svg ref={svgRef} style={{ width: '120%', height: '105%', marginTop: '15px' }}></svg>  {/* 调整SVG的高度和位置 */}
+              <div id="tooltip" style={{
+                position: 'absolute',
+                display: 'none',
+                background: 'rgba(0,0,0,0.7)',
+                color: 'white',
+                padding: '5px',
+                borderRadius: '3px'
+              }}></div>
+            </>
+          ) : (
+            <p>所选类型没有可用数据。</p>
+          )}
+        </div>
       </div>
-      {chartData.length > 0 ? (
-        <>
-          <svg ref={svgRef} style={{ width: '165%', height: '100%' }}></svg>
-          <div id="tooltip" style={{
-            position: 'absolute',
-            display: 'none',
-            background: 'rgba(0,0,0,0.7)',
-            color: 'white',
-            padding: '5px',
-            borderRadius: '3px'
-          }}></div>
-        </>
-      ) : (
-        <p>所选类型没有可用数据。</p>
-      )}
-    </div>
-  );
+    );
 };
 
 export default BarChart;
