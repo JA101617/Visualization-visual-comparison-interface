@@ -50,7 +50,7 @@ const buttonStyles = {
 
 const RadarChart = ({onRadarButtonClick, stateHeatmapSelect}) => {
   const [stateSelectedLabelType, setSelectedLabelType] = useState('SamplingMethod');
-  const [stateShowBothDatasets, setShowBothDatasets] = useState(false);
+  const [stateShowBothDatasets, setShowBothDatasets] = useState(true);
 
   useEffect(()=>{
     console.log('useEffect for heatmapselect or labeltype change')
@@ -182,8 +182,12 @@ const RadarChart = ({onRadarButtonClick, stateHeatmapSelect}) => {
 
   return (
       <div style={{
+        display: 'flex', // 添加 flex 布局
+        flexDirection: 'column', // 垂直方向排列
         position: 'relative',
-        width: '450px',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '510px',
         height:'410px',
         backgroundColor: 'white',
         borderRadius: '3vh',
@@ -201,11 +205,12 @@ const RadarChart = ({onRadarButtonClick, stateHeatmapSelect}) => {
           sx={{ 
             borderColor: 'rgb(164,168,169)',
             color: 'black',
-            fontSize: '13px'
+            fontSize: '13px',
+            textTransform: 'none'
           }}
           //style={{ ...buttonStyles, backgroundColor: chartColors.resnet.border }}
         >
-          采样方法
+          SamplingMethod
         </Button>
         <Button variant="outlined"
           onClick={() => {
@@ -216,23 +221,14 @@ const RadarChart = ({onRadarButtonClick, stateHeatmapSelect}) => {
           sx={{ 
             borderColor: 'rgb(164,168,169)',
             color: 'black', 
-            fontSize: '13px'
+            fontSize: '13px',
+            textTransform: 'none'
           }}
           //style={{ ...buttonStyles, backgroundColor: chartColors.vgg.border }}
         >
-          图表类型
+          BarChartType
         </Button>
-        <Button variant="outlined"
-          onClick={handleShowBothDatasets} 
-          style={{marginRight:'10px', height:'30px', marginTop:'0px'}}
-          sx={{ //样式统一
-            borderColor: 'rgb(164,168,169)',
-            color: 'black',
-            fontSize: '13px'
-          }}
-        > {/* 灰色按钮 */}
-          {stateShowBothDatasets ? '显示单个数据集' : '显示所有数据集'}
-        </Button>
+        
       </div>
       <Radar style={{marginTop:'-10px'}} data={chartData} options={options} />
     </div>

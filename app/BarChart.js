@@ -219,16 +219,17 @@ if (dataType === 'TrainDataSpan') {
         justifyContent: 'center',
         alignItems: 'center',
         position: 'relative',
-        width: '450px',
+        width: '510px',
         height: '330px',
         backgroundColor: 'white',
         borderRadius: '3vh',
         padding: '3vh',
+        overflow: 'hidden',
         boxShadow: '0 2vh 4vh rgba(0, 0, 0, 0.1), 0 -2vh 4vh rgba(0, 0, 0, 0.1), -2vw 2vh 4vh rgba(0, 0, 0, 0.1), -2vw -2vh 4vh rgba(0, 0, 0, 0.1)'
       }}>
         <div style={{ width: '100%', height: '100%', position: 'relative' }}>
           <div style={{ display: 'flex', alignItems: 'center', position: 'absolute', top: '10px', left: '50%', transform: 'translateX(-50%)', zIndex: 10 }}>
-            <FormControl style={{ marginRight: '10px', marginBottom: '10px', minWidth: '100px', maxWidth: '150px', width: '10vw', height: '5vh' }}>
+            <FormControl style={{ marginRight: '10px', marginBottom: '10px', minWidth: '100px', maxWidth: '150px', width: '20vw', height: '5vh' }}>
               <InputLabel id="demo-simple-select-label">Select X Axis</InputLabel>
               <Select
                 labelId="data-type-select-label"
@@ -243,7 +244,7 @@ if (dataType === 'TrainDataSpan') {
                 <MenuItem value="TrainDataSpan">TrainDataSpan</MenuItem>
               </Select>
             </FormControl>
-            <FormControl style={{ marginRight: '10px', marginBottom: '10px', minWidth: '100px', maxWidth: '150px', width: '10vw', height: '5vh' }}>
+            <FormControl style={{ marginRight: '10px', marginBottom: '10px', minWidth: '100px', maxWidth: '150px', width: '20vw', height: '5vh' }}>
               <InputLabel id="color-by-select-label">Color By</InputLabel>
               <Select
                 labelId="color-by-select-label"

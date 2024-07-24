@@ -60,13 +60,13 @@ export default function Home() {
         </div>
         <div class="member">
           <h3>Yixin E</h3>
-          <p>Class: Mixed Class XXXX</p>
+          <p>Class: Mixed Class 2308</p>
           <p>Major: Computer Science</p>
         </div>
         <div class="member">
           <h3>Jinkun Ying</h3>
-          <p>Class: Hybrid Class YYYY</p>
-          <p>Major: Computer Science</p>
+          <p>Class: Information Security 2201</p>
+          <p>Major: Information Security</p>
         </div>
       </div>
       <div style={{
@@ -104,14 +104,14 @@ export default function Home() {
           xUpdater={setHeatmapXAxis}
         />
       </div>
-      <div className="absolute bottom-[2vh] right-[5vw] ">
+      <div className="absolute bottom-[2vh] right-[2vw] ">
         <RadarChart 
           data={data} 
           onRadarButtonClick={handleRadarButtonClick}
           stateHeatmapSelect={stateHeatmapSelected} 
         />
       </div>
-      <div className="absolute top-[2vh] right-[5vw]">
+      <div className="absolute top-[2vh] right-[2vw]">
         <BarChart data={data} />
       </div>
     </div>
