@@ -75,6 +75,34 @@ const Heatmap = ({ xOption: propsXOption, yOption: propsYOption, onHeatmapSelect
       onHeatmapSelect && onHeatmapSelect({ type: stateXOption });
     }
   };
+  //  const handleMouseEnter = async (xValue, yValue) => {
+  //   const mergedData = await fetchData('/merged_table.csv');
+  //   const filteredData = mergedData.filter(d =>
+  //     d[stateXOption] === xValue.toString() && d[stateYOption] === yValue.toString()
+  //   );
+  //   setTooltip({ show: true, x: xValue, y: yValue });
+  //   // 计算每个 Average Error 出现的次数
+  //   const errorCounts = {};
+  //   filteredData.forEach(d => {
+  //     const error = parseFloat(d['Average Error']).toFixed(2);
+  //     if (!errorCounts[error]) {
+  //       errorCounts[error] = 0;
+  //     }
+  //     errorCounts[error]++;
+  //   });
+
+  //   // 将数据转换为线图格式
+  //   const lineDataArray = Object.entries(errorCounts).map(([error, count]) => ({
+  //     value: parseFloat(error),
+  //     count: count
+  //   }));
+
+  //   setLineData(lineDataArray);
+  // };  
+
+  const handleMouseLeave = () => {
+    setTooltip({ show: false, x: 0, y: 0 });
+  };
 
   const handleMouseEnter = async (xValue, yValue) => {
     const mergedData = await fetchData('/merged_table.csv');
@@ -82,21 +110,30 @@ const Heatmap = ({ xOption: propsXOption, yOption: propsYOption, onHeatmapSelect
       d[stateXOption] === xValue.toString() && d[stateYOption] === yValue.toString()
     );
     setTooltip({ show: true, x: xValue, y: yValue });
-    setLineData(filteredData.map((d, index) => ({
-      runIndex: index + 1,
-      value: parseFloat(d['Average Error'])
-    })));
+
+    const errorCounts = {};
+    filteredData.forEach(d => {
+      const value = parseFloat(d['Average Error']).toFixed(2);
+      if (!errorCounts[value]) {
+        errorCounts[value] = 0;
+      }
+      errorCounts[value]++;
+    });
+
+    const lineData = Object.entries(errorCounts).map(([key, count]) => ({
+      error: parseFloat(key).toFixed(2),
+      count: count
+    }))
+    .sort((a, b) => a.error - b.error);
+
+    setLineData(lineData);
   };
   
-  const handleMouseLeave = () => {
-    setTooltip({ show: false, x: 0, y: 0 });
-  };
-
+  const rows = options[stateYOption].length;
+  const cols = options[stateXOption].length;
 
   const filteredData = React.useMemo(() => {
     if (!data.length) return [];
-    const rows = options[stateYOption].length;
-    const cols = options[stateXOption].length;
 
     let minValue = Infinity;
     let maxValue = -Infinity;
@@ -125,38 +162,65 @@ const Heatmap = ({ xOption: propsXOption, yOption: propsYOption, onHeatmapSelect
     return newData;
   }, [data, stateXOption, stateYOption]);
 
-  const rows = options[stateYOption].length;
-  const cols = options[stateXOption].length;
+
 
   useEffect(() => {
     if (lineData.length) {
       const svg = d3.select("#line-chart");
       svg.selectAll("*").remove();
-  
+
       const margin = { top: 10, right: 30, bottom: 30, left: 60 },
         width = 460 - margin.left - margin.right,
         height = 400 - margin.top - margin.bottom;
-  
+
       const x = d3.scaleLinear()
-        .domain([0, d3.max(lineData, d => d.runIndex)])
-        .range([0, width]);
-  
+        .domain([0, d3.max(lineData, d => d.error)])
+        .range([0, height]);
+        
+
       const y = d3.scaleLinear()
-        .domain([0, d3.max(lineData, d => d.value)])
-        .range([height, 0]);
-  
+        .domain([0, d3.max(lineData, d => d.count)])
+        .range([width, 0]);
+
+
       const line = d3.line()
-        .x(d => x(d.runIndex))
-        .y(d => y(d.value));
-  
+        .x(d => x(d.error))
+        .y(d => y(d.count));
+
       svg.append("g")
         .attr("transform", `translate(${margin.left},${margin.top})`)
-        .call(d3.axisLeft(y));
-  
+        .call(d3.axisLeft(y).ticks(5))
+        .append('text')
+        .attr('x', -height / 2)
+        .attr('y', -margin.left + 40)
+        .attr('fill', '#000')
+        .style('text-anchor', 'middle')
+        .attr('transform', 'rotate(-90)')
+        .text('Count');
+
       svg.append("g")
-        .attr("transform", `translate(${margin.left},${height + margin.top})`)
-        .call(d3.axisBottom(x));
-  
+        .attr("transform", `translate(${margin.left},${height + margin.top + 10})`)
+        .call(d3.axisBottom(x).ticks(10))
+        .append('text')
+        .attr('x', width / 2)
+        .attr('y', margin.bottom)
+        .attr('fill', '#000')
+        .style('text-anchor', 'middle')
+        .text('Average Error');
+
+        svg.selectAll('.dot')
+        .data(lineData)
+        .enter().append('circle')
+        .attr('class', 'dot')
+        .attr('cx', d => x(parseFloat(d.error)))
+        .attr('cy', d => y(parseFloat(d.count)))
+        .attr('r', 3) // Increase the size for visibility
+        .attr('fill', 'steelblue')
+        .attr('stroke', 'steelblue')
+        .attr('stroke-width', 1)
+        .attr("transform", `translate(${margin.left},${margin.top})`);;
+
+
       svg.append("path")
         .datum(lineData)
         .attr("fill", "none")
@@ -253,7 +317,7 @@ const Heatmap = ({ xOption: propsXOption, yOption: propsYOption, onHeatmapSelect
           top: '-12vh',
           left: '40vw', // 调整此值使图表更靠右
           width: '500px',
-          height: '400px',
+          height: '450px',
           backgroundColor: 'white',
           border: '1px solid black',
           padding: '10px',
