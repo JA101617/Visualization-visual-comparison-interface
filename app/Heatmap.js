@@ -38,6 +38,7 @@ const Heatmap = ({ xOption: propsXOption, yOption: propsYOption, onHeatmapSelect
   const [lineData, setLineData] = useState([]);
   const [stateXOption, setXOption] = useState(propsXOption);
   const [stateYOption, setYOption] = useState(propsYOption);
+  const [tooltip, setTooltip] = useState({ show: false, x: 0, y: 0});
 
   useEffect(() => {
     fetchData('/Heatmap_data.csv').then((parsedData) => {
@@ -80,12 +81,18 @@ const Heatmap = ({ xOption: propsXOption, yOption: propsYOption, onHeatmapSelect
     const filteredData = mergedData.filter(d =>
       d[stateXOption] === xValue.toString() && d[stateYOption] === yValue.toString()
     );
-
+    setTooltip({ show: true, x: xValue, y: yValue});
     setLineData(filteredData.map((d, index) => ({
       runIndex: index + 1,
       value: parseFloat(d['Average Error'])
     })));
   };
+
+  
+  const handleMouseLeave = () => {
+    setTooltip({ show: false, x: 0, y: 0});
+  };
+
 
   const filteredData = React.useMemo(() => {
     if (!data.length) return [];
@@ -173,7 +180,7 @@ const Heatmap = ({ xOption: propsXOption, yOption: propsYOption, onHeatmapSelect
       position: 'relative'
     }}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        <FormControl style={{ margin: '10px ', width: '15vw' }}>
+        <FormControl style={{ margin: '10px', width: '15vw' }}>
           <InputLabel id="x-axis-select-label">Select X Axis</InputLabel>
           <Select
             labelId="x-axis-select-label"
@@ -206,7 +213,6 @@ const Heatmap = ({ xOption: propsXOption, yOption: propsYOption, onHeatmapSelect
           </Select>
         </FormControl>
       </div>
-
       <table className="w-full border-collapse mt-4">
         <thead>
           <tr>
@@ -232,6 +238,7 @@ const Heatmap = ({ xOption: propsXOption, yOption: propsYOption, onHeatmapSelect
                     backgroundColor: cell !== null ? cell.color : 'gray',
                   }}
                   onMouseEnter={() => handleMouseEnter(options[stateXOption][j], options[stateYOption][i])}
+                  onMouseLeave={handleMouseLeave}
                 >
                   {cell !== null ? cell.value.toFixed(2) : 'N/A'}
                 </td>
@@ -240,11 +247,20 @@ const Heatmap = ({ xOption: propsXOption, yOption: propsYOption, onHeatmapSelect
           ))}
         </tbody>
       </table>
-
-      <svg id="line-chart" width="460" height="400" style={{
-        top: '20px',
-        right: '20px'
-      }}></svg>
+      {tooltip.show && (
+        <div
+          style={{
+            left: '600px',
+            top: '100px',
+            backgroundColor: 'white',
+            border: '1px solid black',
+            padding: '10px',
+            borderRadius: '5px'
+          }}
+        >
+          <svg id="line-chart" width="500" height="500"></svg>
+        </div>
+      )}
     </div>
   );
 };
