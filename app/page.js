@@ -103,6 +103,7 @@ export default function Home() {
             console.log("dummy onHeatmapSelect 1");
           }}
           xUpdater={setHeatmapXAxis}
+          yUpdater={setHeatmapYAxis}
         />
       </div>
       <div className="absolute bottom-[2vh] right-[2vw] ">

@@ -33,7 +33,7 @@ const fetchData = async (url) => {
   return d3.csvParse(text);
 };
 
-const Heatmap = ({ xOption: propsXOption, yOption: propsYOption, onHeatmapSelect, xUpdater }) => {
+const Heatmap = ({ xOption: propsXOption, yOption: propsYOption, onHeatmapSelect, xUpdater, yUpdater }) => {
   const [data, setData] = useState([]);
   const [lineData, setLineData] = useState([]);
   const [stateXOption, setXOption] = useState(propsXOption);
@@ -68,6 +68,9 @@ const Heatmap = ({ xOption: propsXOption, yOption: propsYOption, onHeatmapSelect
   };
 
   const handleYOptionChange = (newYOption) => {
+    if (propsYOption !== newYOption) {
+      yUpdater(newYOption);
+    }
     setYOption(newYOption);
     if (stateXOption === 'ModelName' && (newYOption === 'SamplingMethod' || newYOption === 'BarChartType')) {
       onHeatmapSelect && onHeatmapSelect({ type: newYOption });

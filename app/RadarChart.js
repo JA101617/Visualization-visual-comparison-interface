@@ -94,8 +94,9 @@ const RadarChart = ({onRadarButtonClick, stateHeatmapSelect}) => {
 
   // 处理标签类型切换
   const handleChangeLabelType = (labelType) => {
-    setSelectedLabelType(labelType);
     onRadarButtonClick('ModelName',labelType);
+    setSelectedLabelType(labelType);
+    
   };
 
   // 处理数据集显示切换
@@ -198,8 +199,9 @@ const RadarChart = ({onRadarButtonClick, stateHeatmapSelect}) => {
         <Button variant="outlined"
           onClick={() => {
             console.log('receive sampling method changing request');
-            handleChangeLabelType('SamplingMethod');
             onRadarButtonClick('ModelName','SamplingMethod');
+            handleChangeLabelType('SamplingMethod');
+            
           }}
           style={{marginRight:'10px', height:'30px', marginTop:'0px'}}
           sx={{ 
@@ -214,8 +216,9 @@ const RadarChart = ({onRadarButtonClick, stateHeatmapSelect}) => {
         </Button>
         <Button variant="outlined"
           onClick={() => {
-            handleChangeLabelType('BarChartType');
             onRadarButtonClick('ModelName', 'BarChartType'); 
+            handleChangeLabelType('BarChartType');
+            
           }}
           style={{marginRight:'10px', height:'30px', marginTop:'0px'}}
           sx={{ 
