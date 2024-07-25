@@ -139,16 +139,18 @@ const Heatmap = ({ xOption: propsXOption, yOption: propsYOption, onHeatmapSelect
         height = 400 - margin.top - margin.bottom;
 
       const x = d3.scaleLinear()
-        .domain([0, d3.max(lineData, d => d.runIndex)])
-        .range([0, width]);
+        .domain([0, d3.max(lineData, d => d.value)])
+        .range([0, height]);
+
 
       const y = d3.scaleLinear()
-        .domain([0, d3.max(lineData, d => d.value)])
-        .range([height, 0]);
+        .domain([0, d3.max(lineData, d => d.runIndex)])
+        .range([width, 0]);
+
 
       const line = d3.line()
-        .x(d => x(d.runIndex))
-        .y(d => y(d.value));
+        .x(d => x(d.value))
+        .y(d => y(d.runIndex));
 
       svg.append("g")
         .attr("transform", `translate(${margin.left},${margin.top})`)
