@@ -81,16 +81,15 @@ const Heatmap = ({ xOption: propsXOption, yOption: propsYOption, onHeatmapSelect
     const filteredData = mergedData.filter(d =>
       d[stateXOption] === xValue.toString() && d[stateYOption] === yValue.toString()
     );
-    setTooltip({ show: true, x: xValue, y: yValue});
+    setTooltip({ show: true, x: xValue, y: yValue });
     setLineData(filteredData.map((d, index) => ({
       runIndex: index + 1,
       value: parseFloat(d['Average Error'])
     })));
   };
-
   
   const handleMouseLeave = () => {
-    setTooltip({ show: false, x: 0, y: 0});
+    setTooltip({ show: false, x: 0, y: 0 });
   };
 
 
@@ -133,33 +132,31 @@ const Heatmap = ({ xOption: propsXOption, yOption: propsYOption, onHeatmapSelect
     if (lineData.length) {
       const svg = d3.select("#line-chart");
       svg.selectAll("*").remove();
-
+  
       const margin = { top: 10, right: 30, bottom: 30, left: 60 },
         width = 460 - margin.left - margin.right,
         height = 400 - margin.top - margin.bottom;
-
+  
       const x = d3.scaleLinear()
-        .domain([0, d3.max(lineData, d => d.value)])
-        .range([0, height]);
-
-
-      const y = d3.scaleLinear()
         .domain([0, d3.max(lineData, d => d.runIndex)])
-        .range([width, 0]);
-
-
+        .range([0, width]);
+  
+      const y = d3.scaleLinear()
+        .domain([0, d3.max(lineData, d => d.value)])
+        .range([height, 0]);
+  
       const line = d3.line()
-        .x(d => x(d.value))
-        .y(d => y(d.runIndex));
-
+        .x(d => x(d.runIndex))
+        .y(d => y(d.value));
+  
       svg.append("g")
         .attr("transform", `translate(${margin.left},${margin.top})`)
         .call(d3.axisLeft(y));
-
+  
       svg.append("g")
         .attr("transform", `translate(${margin.left},${height + margin.top})`)
         .call(d3.axisBottom(x));
-
+  
       svg.append("path")
         .datum(lineData)
         .attr("fill", "none")
@@ -172,14 +169,14 @@ const Heatmap = ({ xOption: propsXOption, yOption: propsYOption, onHeatmapSelect
 
   return (
     <div style={{
+      position: 'relative',
       display: 'inline-block',
       backgroundColor: 'white',
       borderRadius: '3vh',
       padding: '3vh',
       boxShadow: '0 2vh 4vh rgba(0, 0, 0, 0.1), 0 -2vh 4vh rgba(0, 0, 0, 0.1), -2vw 2vh 4vh rgba(0, 0, 0, 0.1), -2vw -2vh 4vh rgba(0, 0, 0, 0.1)',
       width: '550px',
-      height: '600px',
-      position: 'relative'
+      height: '600px'
     }}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <FormControl style={{ margin: '10px', width: '15vw' }}>
@@ -250,21 +247,26 @@ const Heatmap = ({ xOption: propsXOption, yOption: propsYOption, onHeatmapSelect
         </tbody>
       </table>
       {tooltip.show && (
-        <div
-          style={{
-            left: '600px',
-            top: '100px',
-            backgroundColor: 'white',
-            border: '1px solid black',
-            padding: '10px',
-            borderRadius: '5px'
-          }}
-        >
-          <svg id="line-chart" width="500" height="500"></svg>
-        </div>
-      )}
-    </div>
-  );
+      <div
+        className='absolute'
+        style={{
+          top: '-12vh',
+          left: '40vw', // 调整此值使图表更靠右
+          width: '500px',
+          height: '400px',
+          backgroundColor: 'white',
+          border: '1px solid black',
+          padding: '10px',
+          borderRadius: '5px',
+          overflow: 'hidden',
+          zIndex: 20
+        }}
+      >
+        <svg id="line-chart" width="500" height="500"></svg>
+      </div>
+    )}
+  </div>
+);
 };
 
 export default Heatmap;

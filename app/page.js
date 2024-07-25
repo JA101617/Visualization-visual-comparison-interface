@@ -87,6 +87,7 @@ export default function Home() {
         </ul>
 
       </div>
+      
       <div className="absolute inset-y-0 left-[37vh]" 
         style={{ 
           display: 'flex', 
