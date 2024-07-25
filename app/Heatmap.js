@@ -6,13 +6,11 @@ import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-
+import Select from '@mui/material/Select';
 
 // 定义颜色比例函数
-const getColor = (value,minval,maxval) => {
-  let newvalue = (value - minval)/(maxval-minval);
-
+const getColor = (value, minval, maxval) => {
+  let newvalue = (value - minval) / (maxval - minval);
   const r = Math.floor(254 * newvalue + 134 * (1 - newvalue));
   const g = Math.floor(181 * newvalue + 196 * (1 - newvalue));
   const b = Math.floor(109 * newvalue + 255 * (1 - newvalue));
@@ -29,83 +27,70 @@ const options = {
 };
 
 // 生成数据
-const fetchData = async () => {
-  const response = await fetch('/Heatmap_data.csv');
+const fetchData = async (url) => {
+  const response = await fetch(url);
   const text = await response.text();
   return d3.csvParse(text);
 };
 
-const parseCSV = (text) => {
-  const rows = text.trim().split('\n').map(row => row.split(','));
-  const headers = rows[0];
-  const data = rows.slice(1).map(row => {
-    let obj = {};
-    row.forEach((value, index) => {
-      obj[headers[index]] = value;
-    });
-    return obj;
-  });
-  return data;
-};
-
-const Heatmap = ({xOption: propsXOption, yOption: propsYOption, onHeatmapSelect, xUpdater}) => {
-  
+const Heatmap = ({ xOption: propsXOption, yOption: propsYOption, onHeatmapSelect, xUpdater }) => {
   const [data, setData] = useState([]);
+  const [lineData, setLineData] = useState([]);
   const [stateXOption, setXOption] = useState(propsXOption);
   const [stateYOption, setYOption] = useState(propsYOption);
 
   useEffect(() => {
-    fetchData().then((parsedData) => {
+    fetchData('/Heatmap_data.csv').then((parsedData) => {
       setData(parsedData);
     });
   }, []);
+
   useEffect(() => {
-      console.log('set x: x propx',{stateXOption,propsXOption});
-      setXOption(propsXOption);
-      console.log('After set x: x propx',{stateXOption,propsXOption});
+    setXOption(propsXOption);
   }, [propsXOption]);
 
   useEffect(() => {
-      console.log('set y: y propy',{stateYOption,propsYOption});
-      setYOption(propsYOption);
-      console.log('After set y: y propy',{stateYOption,propsYOption});
-    //setYOption(propsYOption)
+    setYOption(propsYOption);
   }, [propsYOption]);
 
-
-/* 响应点击选项处理器 */
+  /* 响应点击选项处理器 */
   const handleXOptionChange = (newXOption) => {
-    console.log('onHandleXOptionChange');
-    if (propsXOption != newXOption) {
+    if (propsXOption !== newXOption) {
       xUpdater(newXOption);
     }
     setXOption(newXOption);
     if (newXOption === 'ModelName' && (stateYOption === 'SamplingMethod' || stateYOption === 'BarChartType')) {
-      console.log('change radar from heatmap newX Y ohs',newXOption,stateYOption,onHeatmapSelect);
       onHeatmapSelect && onHeatmapSelect({ type: stateYOption });
     } else if (stateYOption === 'ModelName' && (newXOption === 'SamplingMethod' || newXOption === 'BarChartType')) {
-      console.log('change radar from heatmap newX Y',newXOption,stateYOption);
       onHeatmapSelect && onHeatmapSelect({ type: newXOption });
     }
   };
+
   const handleYOptionChange = (newYOption) => {
-    console.log('onHandleYOptionChange')
     setYOption(newYOption);
     if (stateXOption === 'ModelName' && (newYOption === 'SamplingMethod' || newYOption === 'BarChartType')) {
-      console.log('change radar from heatmap X newY',stateXOption,newYOption);
       onHeatmapSelect && onHeatmapSelect({ type: newYOption });
     } else if (newYOption === 'ModelName' && (stateXOption === 'SamplingMethod' || stateXOption === 'BarChartType')) {
-      console.log('change radar from heatmap X newY',stateXOption,newYOption);
       onHeatmapSelect && onHeatmapSelect({ type: stateXOption });
     }
   };
 
+  const handleMouseEnter = async (xValue, yValue) => {
+    const mergedData = await fetchData('/merged_table.csv');
+    const filteredData = mergedData.filter(d =>
+      d[stateXOption] === xValue.toString() && d[stateYOption] === yValue.toString()
+    );
+
+    setLineData(filteredData.map((d, index) => ({
+      runIndex: index + 1,
+      value: parseFloat(d['Average Error'])
+    })));
+  };
 
   const filteredData = React.useMemo(() => {
     if (!data.length) return [];
     const rows = options[stateYOption].length;
     const cols = options[stateXOption].length;
-    const newData = Array(rows).fill(null).map(() => Array(cols).fill(null));
 
     let minValue = Infinity;
     let maxValue = -Infinity;
@@ -117,6 +102,7 @@ const Heatmap = ({xOption: propsXOption, yOption: propsYOption, onHeatmapSelect,
       }
     });
 
+    const newData = Array(rows).fill(null).map(() => Array(cols).fill(null));
     data.forEach((row) => {
       if (row.xVariable === stateXOption && row.yVariable === stateYOption) {
         const xValue = parseInt(row.xValue) || row.xValue;
@@ -135,20 +121,58 @@ const Heatmap = ({xOption: propsXOption, yOption: propsYOption, onHeatmapSelect,
 
   const rows = options[stateYOption].length;
   const cols = options[stateXOption].length;
-  //const blockSize = Math.min(600 / cols, 600 / rows); // 600是容器的最大宽度和高度
 
-  return ( 
+  useEffect(() => {
+    if (lineData.length) {
+      const svg = d3.select("#line-chart");
+      svg.selectAll("*").remove();
+
+      const margin = { top: 10, right: 30, bottom: 30, left: 60 },
+        width = 460 - margin.left - margin.right,
+        height = 400 - margin.top - margin.bottom;
+
+      const x = d3.scaleLinear()
+        .domain([0, d3.max(lineData, d => d.runIndex)])
+        .range([0, width]);
+
+      const y = d3.scaleLinear()
+        .domain([0, d3.max(lineData, d => d.value)])
+        .range([height, 0]);
+
+      const line = d3.line()
+        .x(d => x(d.runIndex))
+        .y(d => y(d.value));
+
+      svg.append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`)
+        .call(d3.axisLeft(y));
+
+      svg.append("g")
+        .attr("transform", `translate(${margin.left},${height + margin.top})`)
+        .call(d3.axisBottom(x));
+
+      svg.append("path")
+        .datum(lineData)
+        .attr("fill", "none")
+        .attr("stroke", "steelblue")
+        .attr("stroke-width", 1.5)
+        .attr("d", line)
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+    }
+  }, [lineData]);
+
+  return (
     <div style={{
       display: 'inline-block',
       backgroundColor: 'white',
       borderRadius: '3vh',
       padding: '3vh',
       boxShadow: '0 2vh 4vh rgba(0, 0, 0, 0.1), 0 -2vh 4vh rgba(0, 0, 0, 0.1), -2vw 2vh 4vh rgba(0, 0, 0, 0.1), -2vw -2vh 4vh rgba(0, 0, 0, 0.1)',
-      width: '550px',  // 固定宽度
-      height: '600px', // 固定高度
+      width: '550px',
+      height: '600px',
       position: 'relative'
     }}>
-      <div style={{display:'flex', alignItems: 'center'}}>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
         <FormControl style={{ margin: '10px ', width: '15vw' }}>
           <InputLabel id="x-axis-select-label">Select X Axis</InputLabel>
           <Select
@@ -182,7 +206,6 @@ const Heatmap = ({xOption: propsXOption, yOption: propsYOption, onHeatmapSelect,
           </Select>
         </FormControl>
       </div>
-      
 
       <table className="w-full border-collapse mt-4">
         <thead>
@@ -208,6 +231,7 @@ const Heatmap = ({xOption: propsXOption, yOption: propsYOption, onHeatmapSelect,
                     height: `${55 / rows}vh`,
                     backgroundColor: cell !== null ? cell.color : 'gray',
                   }}
+                  onMouseEnter={() => handleMouseEnter(options[stateXOption][j], options[stateYOption][i])}
                 >
                   {cell !== null ? cell.value.toFixed(2) : 'N/A'}
                 </td>
@@ -216,6 +240,11 @@ const Heatmap = ({xOption: propsXOption, yOption: propsYOption, onHeatmapSelect,
           ))}
         </tbody>
       </table>
+
+      <svg id="line-chart" width="460" height="400" style={{
+        top: '20px',
+        right: '20px'
+      }}></svg>
     </div>
   );
 };
